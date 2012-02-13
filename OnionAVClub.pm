@@ -1,9 +1,15 @@
 package OnionAVClub;
 
-use RSS::Tree;
+use HTML::Element;
+use base qw(MyRssBase);
 use strict;
 
-our @ISA = qw(RSS::Tree);
+use constant {
+    FEED  => 'http://www.avclub.com/feed/daily',
+    NAME  => 'avclub',
+    TITLE => 'AV Club',
+    ITEM_CACHE_MINUTES => 60 * 24,
+};
 
 my @TV_I_WATCH = (
     'American Dad',
@@ -12,7 +18,8 @@ my @TV_I_WATCH = (
     'Big Bang Theory',
     'Dexter',
     'Beavis and Butt-Head',
-    'Family Guy'
+    'Family Guy',
+    'Deep Space',
 );
 
 my @TV_I_IGNORE = (
@@ -21,6 +28,7 @@ my @TV_I_IGNORE = (
     'The Office',
     'Scrubs',
     'Survivor',
+    'Survivor (Classic)',
     'Leverage',
     'Hell On Wheels',
     'Saturday Night Live',
@@ -30,124 +38,132 @@ my @TV_I_IGNORE = (
     'The X Factor',
     'Glee',
     '2 Broke Girls',
-    'Terra Nova'
+    'Terra Nova',
+    'American Idol',
+    'Seinfeld',
+    'Top Chef',
+    'Touch',
+    'Alias',
+    'Remodeled',
 );
 
-sub new {
-    my $class = shift;
 
-    my $self = $class->SUPER::new(
-        'http://www.avclub.com/feed/daily',
-        'http://seanmcafee.name/rss/',
-        'avclub', 'AV Club',
+sub init {
+    my $self = shift;
+
+    $self->add(
+        OnionAVClub::Node
+            ->new('savagelove', 'Savage Love')
+            ->match_title('Savage Love:'),
+
+        OnionAVClub::Node
+            ->new('greatjob', 'Great Job')
+            ->match_title('Great Job'),
+
+        OnionAVClub::Node
+            ->new('newswire', 'Newswire')
+            ->match_title(': Newswire:'),
+
+        OnionAVClub::Node
+            ->new('tv', 'TV')
+            ->match_title('^TV:')
+            ->add(
+                OnionAVClub::Node
+                    ->new
+                    ->match_titles('TV', @TV_I_IGNORE),
+
+                OnionAVClub::Node
+                    ->new('tv_i_watch', 'TV I Watch')
+                    ->match_titles('TV', @TV_I_WATCH),
+            ),
+
+        OnionAVClub::Node
+            ->new('films', 'Films')
+            ->match_title('Movie Review'),
+
+        OnionAVClub::Node
+            ->new('film', 'Film')
+            ->match_title('^Film:'),
+
+        OnionAVClub::Node
+            ->new('books', 'Books')
+            ->match_title('^Books:'),
+
+        OnionAVClub::Node
+            ->new('music', 'Music')
+            ->match_title('^Music:'),
+
+        OnionAVClub::RedMeat
+            ->new('redmeat', 'Red Meat')
+            ->match_title('Red Meat'),
+
+        OnionAVClub::Node
+            ->new('geekery', 'Geekery')
+            ->match_title('Gateways to Geekery'),
+
+        OnionAVClub::Node
+            ->new('wondermark', 'Wondermark')
+            ->match_title('Wondermark'),
+
     );
-
-    $self->set_cache(
-        dir   => "$ENV{HOME}/.rss-cache",
-        feed  => 60 * 5,
-        items => 60 * 60 * 24,
-    );
-
-    OnionAVClub::Review
-        ->new('greatjob', 'Great Job')
-        ->title('Great Job')
-        ->add_to($self);
-
-    OnionAVClub::Review
-        ->new('newswire', 'Newswire')
-        ->title(': Newswire:')
-        ->add_to($self);
-
-    my $tv = OnionAVClub::Review
-        ->new('tv', 'TV')
-        ->title('^TV:')
-        ->add_to($self);
-
-    OnionAVClub::Review
-        ->new
-        ->titles('TV', @TV_I_IGNORE)
-        ->add_to($tv);
-
-    OnionAVClub::Review
-        ->new('tv_i_watch', 'TV I Watch')
-        ->titles('TV', @TV_I_WATCH)
-        ->add_to($tv);
-
-    OnionAVClub::Review
-        ->new('films', 'Films')
-        ->title('Movie Review')
-        ->add_to($self);
-
-    OnionAVClub::Review
-        ->new('film', 'Film')
-        ->title('^Film:')
-        ->add_to($self);
-
-    OnionAVClub::Review
-        ->new('books', 'Books')
-        ->title('^Books:')
-        ->add_to($self);
-
-    OnionAVClub::Review
-        ->new('music', 'Music')
-        ->title('^Music:')
-        ->add_to($self);
-
-    RSS::Tree::Node
-        ->new('redmeat', 'Red Meat')
-        ->title('Red Meat')
-        ->add_to($self);
-
-    RSS::Tree::Node
-        ->new('geekery', 'Geekery')
-        ->title('Gateways to Geekery')
-        ->add_to($self);
-
-    return $self;
 
 }
 
-sub render {
+sub _render_article {
     my ($self, $item) = @_;
 
-    return $self->SUPER::render($item) if $item->title !~ /: Wondermark:/;
+    my ($byline) = $item->page->findnodes('//div[%s]', 'byline');
 
     my ($image) = $item->page->findnodes('//div[%s]/img', 'image');
-
-    return $image
-        ? $item->page->absolutize($image, 'src')
-        : $self->SUPER::render($item);
-
-}
-
-package OnionAVClub::Review;
-
-our @ISA = qw(RSS::Tree::Node);
-
-sub titles {
-    my ($self, $prefix, @titles) = @_;
-    my $title_re = join '|', map quotemeta, @titles;
-    $self->title("^\Q$prefix\E: (?i:$title_re):");
-}
-
-sub render {
-    my ($self, $item) = @_;
 
     my $grade = $item->page->findvalue(
         '//div[%s]/span[%s]', 'title-holder', 'grade'
     );
 
-    my @show = map {
-        $_->findnodes('./p|./ul|./ol|./blockquote')
-    } $item->page->findnodes(
-        '//div[%s and %s and %s]', 'article', 'body', 'article_body'
+    my @content = $item->page->findnodes(
+        '//div[%s and %s and %s]/*[self::p or self::ul or self::ol or self::blockquote]',
+        'article', 'body', 'article_body'
     );
 
     return (
-        $grade ? "<p>Grade: <b>$grade</b></p>" : "",
-        @show ? @show : $self->SUPER::render($item)
+        $image  ? $self->new_element('p', $image) : (),
+        $byline ? $self->new_element('p', $byline->as_text) : (),
+        defined $grade && $grade =~ /[[:alpha:]]/
+            ? $self->new_element('p', 'Grade: ', ['b', $grade])
+            : (),
+        @content ? @content : $self->SUPER::render($item)
     );
 
 }
+
+sub render {
+    my ($self, $item) = @_;
+    return $self->_render_article($item) if $item->title !~ /: Tolerability Index/;
+    return ($item->page->findnodes('//div[%s]/img', 'image'))[0];
+}
+
+
+package OnionAVClub::Node;
+
+use base qw(RSS::Tree::Node);
+
+*render = *OnionAVClub::_render_article;
+
+sub match_titles {
+    my ($self, $prefix, @titles) = @_;
+    my $title_re = join '|', map quotemeta, @titles;
+    $self->match_title("^\Q$prefix\E:.*(?i:$title_re):");
+}
+
+
+package OnionAVClub::RedMeat;
+
+use base qw(RSS::Tree::Node);
+
+sub render {
+    my ($self, $item) = @_;
+    return ($item->page->findnodes('//div[%s]/img', 'image'))[0];
+}
+
 
 1;

@@ -1,29 +1,13 @@
 package SROMG;
 
-use RSS::Tree;
+use base qw(MyRssBase);
 use strict;
 
-our @ISA = qw(RSS::Tree);
-
-
-sub new {
-    my $class = shift;
-
-    my $self = $class->SUPER::new(
-        'http://www.mezzacotta.net/garfield/rss.xml',
-        'http://seanmcafee.name/rss/',
-        'sromg', 'Square Root of Minus Garfield'
-    );
-
-    $self->set_cache(
-        dir   => "$ENV{HOME}/.rss-cache",
-        feed  => 60 * 5,
-        items => 60 * 60 * 24 * 30,
-    );
-
-    return $self;
-
-}
+use constant {
+    FEED  => 'http://www.mezzacotta.net/garfield/rss.xml',
+    NAME  => 'sromg',
+    TITLE => 'Square Root of Minute Garfield',
+};
 
 sub uri_for {
     my ($self, $item) = @_;
@@ -32,11 +16,12 @@ sub uri_for {
 
 sub postprocess_item {
     my ($self, $item) = @_;
-    $item->{guid} .= '#';
+    $item->{guid} .= '&foo=bar';
 }
 
 sub render {
     my ($self, $item) = @_;
+
     my @comments = $item->page->findnodes(
         '//p[contains(string(),"The author writes")]'
     );

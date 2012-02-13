@@ -1,33 +1,20 @@
 package XKCD;
 
-use HTML::Element;
-use base qw(RSS::Tree);
+use base qw(MyRssBase);
 use strict;
 
-sub new {
-    my $class = shift;
+use constant {
+    FEED  => 'http://xkcd.com/rss.xml',
+    NAME  => 'xkcd',
+    TITLE => 'XKCD',
+};
 
-    my $self = $class->SUPER::new(
-        'http://xkcd.com/rss.xml',
-        'http://seanmcafee.name/rss/',
-        'xkcd', 'XKCD',
-    );
-
-    $self->set_cache(
-        dir   => "$ENV{HOME}/.rss-cache",
-        feed  => 60 * 5,
-        items => 60 * 60 * 24 * 30 * 12,
-    );
-
-    return $self;
-
-}
 
 sub render {
     my ($self, $item) = @_;
     my ($image) = $item->body->findnodes('//img');
     $image->postinsert(
-        HTML::Element->new_from_lol(['p', ['i', $image->attr('title')]])
+        $self->new_element('p', [ 'i', $image->attr('title') ])
     ) if $image;
     return $item->body;
 }

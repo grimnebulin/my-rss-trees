@@ -1,47 +1,30 @@
 package FailBlog;
 
-use RSS::Tree;
+use base qw(MyRssBase);
 use strict;
 
-our @ISA = qw(RSS::Tree);
+use constant {
+    FEED  => 'http://feeds.feedburner.com/failblog',
+    NAME  => 'failblog',
+    TITLE => 'Fail Blog',
+    ITEM_CACHE_MINUTES => 60 * 24 * 30,
+};
 
-
-sub new {
-    my $class = shift;
-
-    my $self = $class->SUPER::new(
-        'http://feeds.feedburner.com/failblog',
-        'http://seanmcafee.name/rss/',
-        'failblog', 'Fail Blog'
-    );
-
-    $self->set_cache(
-        dir   => "$ENV{HOME}/.rss-cache",
-        feed  => 60 * 5,
-        items => 60 * 60 * 24 * 30,
-    );
-
-    FailBlogNode
-        ->new('failblogvideo', 'Fail Blog Video')
-        ->add_to($self);
-
+sub init {
+    my $self = shift;
+    $self->add(FailBlogNode->new('failblogvideo', 'Fail Blog Video'));
     return $self;
-
 }
 
-{
 
 package FailBlogNode;
 
-use RSS::Tree::Node;
-
-our @ISA = qw(RSS::Tree::Node);
+use base qw(RSS::Tree::Node);
 
 sub test {
     my ($self, $item) = @_;
     return $item->content->findnodes('//param|//iframe')->size > 0;
 }
 
-}
 
 1;
