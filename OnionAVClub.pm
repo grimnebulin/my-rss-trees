@@ -78,6 +78,10 @@ sub init {
             ),
 
         OnionAVClub::Node
+            ->new('games2', 'Games')
+            ->match_title('^Games:'),
+
+        OnionAVClub::Node
             ->new('films', 'Films')
             ->match_title('Movie Review'),
 

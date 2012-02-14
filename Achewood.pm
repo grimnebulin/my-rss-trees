@@ -11,7 +11,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->findnodes('//img[%s]', 'comic')->shift;
+    return ($item->page->findnodes('//img[%s]', 'comic'))[0];
 }
 
 1;
