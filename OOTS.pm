@@ -11,7 +11,11 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return ($item->page->findnodes('//img[contains(@src,"comics/images")]'))[0];
+
+    my ($image) = $item->page->findnodes('//img[contains(@src,"comics/images")]');
+
+    return $image ? $image : ();
+
 }
 
 1;

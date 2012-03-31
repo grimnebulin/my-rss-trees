@@ -15,11 +15,11 @@ my @TV_I_WATCH = (
     'American Dad',
     'Archer',
     'South Park',
-    'Big Bang Theory',
+    'The Big Bang Theory',
     'Dexter',
     'Beavis and Butt-Head',
     'Family Guy',
-    'Deep Space',
+    'Star Trek: Deep Space Nine',
 );
 
 my @TV_I_IGNORE = (
@@ -45,6 +45,33 @@ my @TV_I_IGNORE = (
     'Touch',
     'Alias',
     'Remodeled',
+    '30 Rock',
+    'Unsupervised',
+    'The Vampire Diaries',
+    'Revenge',
+    'Modern Family',
+    'The Middle',
+    'Suburgatory',
+    'Parenthood',
+    'Ringer',
+    'New Girl',
+    'Switched at Birth',
+    'Raising Hope',
+    'Cougar Town',
+    'Being Human',
+    'Smash',
+    'How I Met Your Mother',
+    'House',
+    'Pan Am',
+    'Angry Boys',
+    'House Of Lies',
+    'Supernatural',
+    'Fringe',
+    'Portlandia',
+    'The Adventures of Pete and Pete',
+    'Project Runway',
+    'Californication',
+    'Shameless',
 );
 
 
@@ -156,7 +183,7 @@ use base qw(RSS::Tree::Node);
 sub match_titles {
     my ($self, $prefix, @titles) = @_;
     my $title_re = join '|', map quotemeta, @titles;
-    $self->match_title("^\Q$prefix\E:.*(?i:$title_re):");
+    $self->match_title("^\Q$prefix\E: (?i:$title_re)\b");
 }
 
 
