@@ -183,7 +183,7 @@ use base qw(RSS::Tree::Node);
 sub match_titles {
     my ($self, $prefix, @titles) = @_;
     my $title_re = join '|', map quotemeta, @titles;
-    $self->match_title("^\Q$prefix\E: (?i:$title_re)\b");
+    $self->match_title("^\Q$prefix\E: (?i:$title_re)\\b");
 }
 
 
