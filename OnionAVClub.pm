@@ -1,6 +1,5 @@
 package OnionAVClub;
 
-use HTML::Element;
 use base qw(MyRssBase);
 use strict;
 
@@ -20,10 +19,16 @@ my @TV_I_WATCH = (
     'Beavis and Butt-Head',
     'Family Guy',
     'Star Trek: Deep Space Nine',
+    'Bob\'s Burgers',
+    'Game of Thrones',
+    'The Legend of Korra',
+    'Community',
+    'Adventure Time',
+    'Cheers',
 );
 
 my @TV_I_IGNORE = (
-    'Amazing Race',
+    'The Amazing Race',
     'X Factor',
     'The Office',
     'Scrubs',
@@ -72,6 +77,13 @@ my @TV_I_IGNORE = (
     'Project Runway',
     'Californication',
     'Shameless',
+    'Mad Men',
+    'The Celebrity Apprentice',
+    'The Sopranos',
+    'The Voice',
+    'Lost Girl',
+    'RuPaul\'s Drag Race',
+    'America\'s Next Top Model',
 );
 
 
@@ -104,7 +116,7 @@ sub init {
                     ->match_titles('TV', @TV_I_WATCH),
             ),
 
-        OnionAVClub::Node
+        OnionAVClub::Node::Games
             ->new('games2', 'Games')
             ->match_title('^Games:'),
 
@@ -114,7 +126,7 @@ sub init {
 
         OnionAVClub::Node
             ->new('film', 'Film')
-            ->match_title('^Film:'),
+            ->match_title('^(?:Film|DVD):'),
 
         OnionAVClub::Node
             ->new('books', 'Books')
@@ -124,7 +136,7 @@ sub init {
             ->new('music', 'Music')
             ->match_title('^Music:'),
 
-        OnionAVClub::RedMeat
+        OnionAVClub::Node::RedMeat
             ->new('redmeat', 'Red Meat')
             ->match_title('Red Meat'),
 
@@ -145,7 +157,7 @@ sub _render_article {
 
     my ($byline) = $item->page->findnodes('//div[%s]', 'byline');
 
-    my ($image) = $item->page->findnodes('//div[%s]/img', 'image');
+    my ($image) = $item->page->findnodes('//div[%s or %s]/img', 'image', 'review_image');
 
     my $grade = $item->page->findvalue(
         '//div[%s]/span[%s]', 'title-holder', 'grade'
@@ -174,6 +186,51 @@ sub render {
 }
 
 
+package OnionAVClub::Renderer;
+
+sub _avc_render {
+    my ($self, $item) = @_;
+    my $page = $item->page;
+    my ($image) = $self->_avc_image($page);
+    my ($byline) = $self->_avc_byline($page);
+    my $grade = $self->_avc_grade($page);
+    my @content = $self->_avc_content($page);
+
+    return (
+        $image  ? $self->new_element('p', $image) : (),
+        $byline ? $self->new_element('p', $byline->as_text) : (),
+        defined $grade && $grade =~ /[[:alpha:]]/
+            ? $self->new_element('p', 'Grade: ', ['b', $grade])
+            : (),
+        @content ? @content : $self->SUPER::render($item)
+    );
+
+}
+
+sub _avc_byline {
+    my ($self, $page) = @_;
+    return ($page->findnodes('//div[%s]', 'byline'))[0];
+}
+
+sub _avc_image {
+    my ($self, $page) = @_;
+    return ($page->findnodes('//div[%s]/img', 'image'))[0];
+}
+
+sub _avc_grade {
+    my ($self, $page) = @_;
+    return $page->findvalue('//div[%s]/span[%s]', 'title-holder', 'grade');
+}
+
+sub _avc_content {
+    my ($self, $page) = @_;
+    return $page->findnodes(
+        '//div[%s and %s and %s]/*[self::p or self::ul or self::ol or self::blockquote]',
+        'article', 'body', 'article_body'
+    );
+}
+
+
 package OnionAVClub::Node;
 
 use base qw(RSS::Tree::Node);
@@ -187,13 +244,33 @@ sub match_titles {
 }
 
 
-package OnionAVClub::RedMeat;
+package OnionAVClub::Node::RedMeat;
 
 use base qw(RSS::Tree::Node);
 
 sub render {
     my ($self, $item) = @_;
     return ($item->page->findnodes('//div[%s]/img', 'image'))[0];
+}
+
+
+package OnionAVClub::Node::Games;
+
+use base qw(RSS::Tree::Node);
+
+sub render {
+    my ($self, $item) = @_;
+
+    my ($image)   = $item->page->findnodes('//div[@id="main-content"]/img');
+    my ($byline)  = $item->page->findnodes('//h3[@id="byline"]');
+    my ($content) = $item->page->findnodes('//div[%s]', 'entry');
+
+    return (
+        $image   ? $self->new_element('p', $image) : (),
+        $byline  ? $self->new_element('p', $byline->as_text) : (),
+        $content ? $content : $self->SUPER::render($item),
+    );
+
 }
 
 
