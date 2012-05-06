@@ -1,11 +1,11 @@
 package ComicsCurmudgeon;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
-    FEED => 'http://feeds.feedburner.com/joshreads',
-    NAME => 'comicscurmudgeon',
+    FEED  => 'http://feeds.feedburner.com/joshreads',
+    NAME  => 'comicscurmudgeon',
     TITLE => 'The Comics Curmudgeon',
 };
 

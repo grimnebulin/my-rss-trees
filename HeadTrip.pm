@@ -1,6 +1,6 @@
 package HeadTrip;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
@@ -9,9 +9,10 @@ use constant {
     TITLE => 'Head Trip',
 };
 
+
 sub render {
     my ($self, $item) = @_;
-    return ($item->page->findnodes('//img[contains(@src,"/comics/")]'))[0];
+    return $item->page->findnodes('//img[contains(@src,"/comics/")]')->shift;
 }
 
 

@@ -1,6 +1,6 @@
 package Dilbert;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
@@ -9,10 +9,12 @@ use constant {
     TITLE => 'Dilbert',
 };
 
+
 sub render {
     my ($self, $item) = @_;
     $_->detach for $item->body->findnodes('//a[contains(@href,"doubleclick")]');
     return $item->body;
 }
+
 
 1;

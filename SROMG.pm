@@ -1,12 +1,12 @@
 package SROMG;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
     FEED  => 'http://www.mezzacotta.net/garfield/rss.xml',
     NAME  => 'sromg',
-    TITLE => 'Square Root of Minute Garfield',
+    TITLE => 'Square Root of Minus Garfield',
 };
 
 sub uri_for {

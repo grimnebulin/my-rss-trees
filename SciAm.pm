@@ -1,6 +1,6 @@
 package SciAm;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {

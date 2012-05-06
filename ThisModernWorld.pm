@@ -1,6 +1,6 @@
 package ThisModernWorld;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
@@ -9,19 +9,10 @@ use constant {
     TITLE => 'This Modern World',
 };
 
-sub init {
-    my $self = shift;
-    $self->add(ThisModernWorld::Not->new);
-}
-
-
-package ThisModernWorld::Not;
-
-use base qw(RSS::Tree::Node);
 
 sub test {
     my ($self, $item) = @_;
-    return $item->author !~ /Tom Tomorrow/;
+    return $item->author =~ /Tom Tomorrow/;
 }
 
 

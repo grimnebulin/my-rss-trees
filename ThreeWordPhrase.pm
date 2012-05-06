@@ -1,6 +1,6 @@
 package ThreeWordPhrase;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
@@ -22,5 +22,6 @@ sub _images {
         $uri->host =~ /threewordphrase/ ? $_ : ();
     } $item->page->findnodes('//img[@width > 500]');
 }
+
 
 1;

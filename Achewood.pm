@@ -1,6 +1,6 @@
 package Achewood;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
@@ -9,9 +9,11 @@ use constant {
     TITLE => 'Achewood',
 };
 
+
 sub render {
     my ($self, $item) = @_;
     return $item->page->findnodes('//img[%s]', 'comic')->shift;
 }
+
 
 1;

@@ -1,6 +1,6 @@
 package RegisterScience;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
@@ -12,8 +12,8 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    my ($body) = $item->page->findnodes('//div[@id="body"]');
-    $_->detach for $item->findnodes($body, 'descendant::div[%s]', 'ad-now');
+    my ($body) = $item->page->findnodes('//div[@id="article"]');
+    $_->detach for $item->findnodes($body, 'descendant::div[%s or %s]', 'ad-now', 'article-nav');
     my ($tags) = $item->findnodes($body, 'child::div[@id="tags"]');
     $_->detach for $tags ? ($tags->right, $tags) : ();
     return $body;

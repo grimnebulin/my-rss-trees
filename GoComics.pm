@@ -1,6 +1,6 @@
 package GoComics;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 use utf8;
 

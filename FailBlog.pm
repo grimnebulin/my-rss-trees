@@ -1,19 +1,24 @@
 package FailBlog;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
     FEED  => 'http://feeds.feedburner.com/failblog',
     NAME  => 'failblog',
     TITLE => 'Fail Blog',
-    ITEM_CACHE_MINUTES => 60 * 24 * 30,
 };
 
 sub init {
     my $self = shift;
-    $self->add(FailBlogNode->new('failblogvideo', 'Fail Blog Video'));
-    return $self;
+    $self->add(
+        FailBlogNode->new('failblogvideo', 'Fail Blog Video')
+    );
+}
+
+sub test {
+    my ($self, $item) = @_;
+    return $item->title !~ /Mini Clip Show/;
 }
 
 sub render {

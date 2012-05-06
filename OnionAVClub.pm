@@ -1,13 +1,12 @@
 package OnionAVClub;
 
-use base qw(MyRssBase);
+use base qw(RSS::Tree);
 use strict;
 
 use constant {
     FEED  => 'http://www.avclub.com/feed/daily',
     NAME  => 'avclub',
     TITLE => 'AV Club',
-    ITEM_CACHE_MINUTES => 60 * 24,
 };
 
 my @TV_I_WATCH = (
@@ -164,8 +163,8 @@ sub _render_article {
     );
 
     my @content = $item->page->findnodes(
-        '//div[%s and %s and %s]/*[self::p or self::ul or self::ol or self::blockquote]',
-        'article', 'body', 'article_body'
+        '//div[%s]/*[self::p or self::ul or self::ol or self::blockquote]',
+        'article_body'
     );
 
     return (
