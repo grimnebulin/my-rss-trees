@@ -9,14 +9,21 @@ sub render {
     return $item->page->findnodes('//img[%s and ./@onload]', 'strip');
 }
 
+my @child;
+
 sub _comic {
     my ($pkg, $feedid, $name, $title) = @_;
     my $feed = "http://feeds.feedburner.com/uclick/$feedid";
     no strict 'refs';
-    @{ "${pkg}::ISA"   } = qw(GoComics);
+    @{ "${pkg}::ISA"   } = __PACKAGE__;
     *{ "${pkg}::FEED"  } = sub { $feed };
     *{ "${pkg}::NAME"  } = sub { $name };
     *{ "${pkg}::TITLE" } = sub { $title };
+    push @child, $pkg;
+}
+
+sub write_programs {
+    $_->new->RSS::Tree::write_programs(use => __PACKAGE__) for @child;
 }
 
 _comic('Ballard', 'ballardstreet', 'ballard', 'Ballard Street');
