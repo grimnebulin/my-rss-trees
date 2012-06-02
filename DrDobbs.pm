@@ -12,9 +12,23 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->findnodes(
-        '//*[%s or %s or %s]', 'byline', 'story-teaser', 'story'
-    );
+    my $page = $item->page;
+    my @content;
+
+    while ($page) {
+        push @content, $page->findnodes(
+            '//*[@id="IG_description" or @id="IG_main_image" or %s or %s or %s]',
+            'byline', 'story-teaser', 'story'
+        );
+        my ($next) = grep { $_->as_trimmed_text =~ /\b next \b/xi }
+            $page->findnodes('//div[%s]//a', 'nav1');
+        $page = $next && $page->open($next->attr('href'));
+        push @content, '<hr><div>Next page fetched automatically.</div><hr>'
+            if $page;  # temporary
+    }
+
+    return @content;
+
 }
 
 

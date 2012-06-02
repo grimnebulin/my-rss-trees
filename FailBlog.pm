@@ -22,7 +22,8 @@ sub test {
 }
 
 sub render {
-    return;
+    my ($self, $item) = @_;
+    return $item->content;
 }
 
 
@@ -35,9 +36,7 @@ sub test {
     return $item->content->findnodes('//param|//iframe')->size > 0;
 }
 
-sub render {
-    return;
-}
+*render = \&FailBlog::render;
 
 
 1;

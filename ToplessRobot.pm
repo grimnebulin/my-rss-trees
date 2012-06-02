@@ -17,17 +17,25 @@ my $TEXT_LIMIT = 2000;
 sub render {
     my ($self, $item) = @_;
     my ($body) = $item->page->findnodes('//div[%s]', 'Entry_Body') or return;
-    my ($tags) = $item->findnodes($body, 'child::div[%s]', 'Tags');
-    $_->detach for $tags ? ($tags->right, $tags) : ();
 
-    if ($body->findnodes('//img|//embed|//iframe')->size > $EMBED_LIMIT ||
-        length($body->as_trimmed_text) > $TEXT_LIMIT) {
-        my ($more) = $body->findnodes('//div[@id="more"]');
-        $_->detach for $more ? ($more->right, $more) : ();
-    }
+    $self->_truncate($body, 'child::div[%s]', 'Tags');
+    $self->_truncate($body, '//div[@id="more"]') if _body_too_long($body);
 
     return $body;
 
+}
+
+sub _truncate {
+    my ($self, $context, @xpath) = @_;
+    for my $node ($self->findnodes($context, @xpath)) {
+        $node->parent->splice_content($node->pindex);
+    }
+}
+
+sub _body_too_long {
+    my $body = shift;
+    return $body->findnodes('//img|//embed|//iframe')->size > $EMBED_LIMIT
+        || length($body->as_trimmed_text) > $TEXT_LIMIT;
 }
 
 

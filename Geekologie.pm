@@ -12,10 +12,10 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    $_->detach for $item->body->findnodes(
+    $_->detach for $item->description->findnodes(
         '//p[descendant::a[contains(@href,"doubleclick")]]|//img[@height="1"]'
     );
-    return $item->body;
+    return $item->description;
 }
 
 1;

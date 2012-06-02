@@ -12,11 +12,11 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    my ($image) = $item->body->findnodes('//img');
+    my ($image) = $item->description->findnodes('//img');
     $image->postinsert(
         $self->new_element('p', [ 'i', $image->attr('title') ])
     ) if $image;
-    return $item->body;
+    return $item->description;
 }
 
 

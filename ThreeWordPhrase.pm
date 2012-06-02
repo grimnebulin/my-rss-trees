@@ -12,16 +12,16 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return (_images($item), '<br>', $self->SUPER::render($item));
+    return $item->page->findnodes('//center/img');
 }
 
-sub _images {
-    my $item = shift;
-    return map {
-        my $uri = $item->absolutize($_, 'src');
-        $uri->host =~ /threewordphrase/ ? $_ : ();
-    } $item->page->findnodes('//img[@width > 500]');
-}
+# sub _images {
+#     my $item = shift;
+#     return map {
+#         my $uri = $item->absolutize($_, 'src');
+#         $uri->host =~ /threewordphrase/ ? $_ : ();
+#     } $item->page->findnodes('//img[@width > 500]');
+# }
 
 
 1;
