@@ -28,6 +28,13 @@ my @TV_I_WATCH = (
     'Young Justice',
     'Batman: The Animated Series',
     'Metalocalypse',
+    'Chappelle.s Show',
+    'Firefly',
+    'Babylon 5',
+    'Police Squad',
+    'Six Feet Under',
+    'The Simpsons .Classic',
+    'Animaniacs',
 );
 
 my @TV_I_IGNORE = (
@@ -94,6 +101,8 @@ my @TV_I_IGNORE = (
     'Don.t Trust The',
     'The Big C',
     'Nurse Jackie',
+    'The West Wing',
+    'MasterChef',
 );
 
 
