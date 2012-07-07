@@ -6,7 +6,7 @@ use utf8;
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->findnodes('//img[%s and ./@onload]', 'strip');
+    return $item->page->findnodes('//img[%s and attribute::onload]', 'strip');
 }
 
 my @child;
@@ -36,6 +36,7 @@ _comic('Lio', 'lio', 'lio', 'Liō');
 _comic('NonSequitur', 'nonsequitur', 'nonsequitur', 'Non Sequitur');
 _comic('Peanuts', 'peanuts', 'peanuts', 'Peanuts');
 _comic('Pearls', 'pearlsbeforeswine', 'pearls', 'Pearls Before Swine');
+_comic('GetFuzzy', 'getfuzzy', 'getfuzzy', 'Get Fuzzy');
 
 
 1;
