@@ -6,7 +6,7 @@ use strict;
 use constant {
     NAME  => 'pharyngula',
     TITLE => 'Pharyngula',
-    FEED  => 'http://freethoughtblogs.com/pharyngula/feed/',
+    FEED  => 'http://feeds.feedburner.com/freethoughtblogs/pharyngula',
 };
 
 
