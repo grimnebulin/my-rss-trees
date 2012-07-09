@@ -34,7 +34,7 @@ sub _truncate {
 
 sub _body_too_long {
     my $body = shift;
-    return $body->find('//img|//embed|//iframe')->size > $EMBED_LIMIT
+    return $body->findnodes('//img|//embed|//iframe')->size > $EMBED_LIMIT
         || length($body->as_trimmed_text) > $TEXT_LIMIT;
 }
 
