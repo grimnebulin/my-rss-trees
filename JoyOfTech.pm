@@ -14,10 +14,10 @@ sub render {
     my ($self, $item) = @_;
 
     return $self->SUPER::render($item)
-        if 0 == (my ($thumbnail) = $item->description->findnodes('//a/img'));
+        if 0 == (my ($thumbnail) = $item->description->find('//a/img'));
 
-    my ($image) = $self->download($thumbnail->parent->attr('href'))
-                       ->findnodes('//img[contains(@alt,"Joy of Tech")]');
+    my ($image) = $self->fetch($thumbnail->parent->attr('href'))
+                       ->find('//img[contains(@alt,"Joy of Tech")]');
     if ($image) {
         $item->absolutize($image, 'src');
         $thumbnail->parent->replace_with($image);

@@ -14,13 +14,13 @@ my $TEXT_LIMIT = 1000;
 sub render {
     my ($self, $item) = @_;
 
-    for my $td ($item->page->findnodes('//td')) {
+    for my $td ($item->page->find('//td')) {
         if (length($td->as_text) >= $TEXT_LIMIT) {
             return $td->content_list;
         }
     }
 
-    return $item->page->findnodes('//img[1]');
+    return $item->page->find('//img[1]');
 
 }
 

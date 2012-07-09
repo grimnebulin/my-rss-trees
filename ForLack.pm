@@ -11,7 +11,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->findnodes('//img[starts-with(@alt,"Comic #")]');
+    return $item->page->find('//img[starts-with(@alt,"Comic #")]');
 }
 
 

@@ -12,7 +12,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    $_->detach for $item->description->findnodes('//a[contains(@href,"doubleclick")]');
+    $_->detach for $item->description->find('//a[contains(@href,"doubleclick")]');
     return $item->description;
 }
 

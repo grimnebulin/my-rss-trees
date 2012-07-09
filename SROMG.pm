@@ -22,13 +22,13 @@ sub postprocess_item {
 sub render {
     my ($self, $item) = @_;
 
-    my @comments = $item->page->findnodes(
+    my @comments = $item->page->find(
         '//p[contains(string(),"The author writes")]'
     );
 
     if (@comments) {
         splice @comments, 1;
-        for my $sibling ($comments[0]->findnodes('following-sibling::*')) {
+        for my $sibling ($comments[0]->find('following-sibling::*')) {
             last if $sibling->tag ne 'p';
             push @comments, $sibling;
         }

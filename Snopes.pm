@@ -14,7 +14,7 @@ sub render {
     my ($self, $item) = @_;
     my @rendered = $self->SUPER::render($item);
 
-    my ($divider) = $item->page->findnodes('//img[contains(@src,"content-divider")]');
+    my ($divider) = $item->page->find('//img[contains(@src,"content-divider")]');
 
     if ($divider) {
         my $verdict = $divider->parent->right->as_text;

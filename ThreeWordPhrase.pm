@@ -12,7 +12,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->findnodes('//center/img');
+    return $item->page->find('//center/img');
 }
 
 # sub _images {
@@ -20,7 +20,7 @@ sub render {
 #     return map {
 #         my $uri = $item->absolutize($_, 'src');
 #         $uri->host =~ /threewordphrase/ ? $_ : ();
-#     } $item->page->findnodes('//img[@width > 500]');
+#     } $item->page->find('//img[@width > 500]');
 # }
 
 

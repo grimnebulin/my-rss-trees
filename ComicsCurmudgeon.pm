@@ -11,7 +11,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    $_->detach for $item->content->findnodes(
+    $_->detach for $item->content->find(
         '//p[.//img[contains(@src,"doubleclick")]]'
     );
     return $item->content;

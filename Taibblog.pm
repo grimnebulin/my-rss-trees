@@ -12,7 +12,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->findnodes('//div[%s]/*', 'blog-post-content');
+    return $item->page->find('//div[%s]/*', 'blog-post-content');
 }
 
 

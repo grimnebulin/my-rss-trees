@@ -17,9 +17,9 @@ sub init {
 
 sub render {
     my ($self, $item) = @_;
-    my ($content) = $item->page->findnodes('//div[@id="main-content"]')
+    my ($content) = $item->page->find('//div[@id="main-content"]')
         or return;
-    $_->detach for $content->findnodes(
+    $_->detach for $content->find(
         '//*[@id="page-category" or @id="share" or @id="outbrain" or @id="comments"]'
     );
     return $content;

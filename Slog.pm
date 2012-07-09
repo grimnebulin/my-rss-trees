@@ -17,7 +17,7 @@ sub test {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->findnodes('//div[%s]', 'postBody');
+    return $item->page->find('//div[%s]', 'postBody');
 }
 
 

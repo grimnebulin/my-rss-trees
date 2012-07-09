@@ -6,7 +6,7 @@ use utf8;
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->findnodes('//img[%s and attribute::onload]', 'strip');
+    return $item->page->find('//img[%s and attribute::onload]', 'strip');
 }
 
 my @child;

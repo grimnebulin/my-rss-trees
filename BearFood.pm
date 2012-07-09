@@ -12,7 +12,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    my ($anchor) = $item->page->findnodes('//div[@id="link"]//a[@rel]');
+    my ($anchor) = $item->page->find('//div[@id="link"]//a[@rel]');
     my @content = $item->description;
     push @content, $self->new_element(
         'p', [ 'a', { href => $anchor->attr('href') }, 'Link' ]

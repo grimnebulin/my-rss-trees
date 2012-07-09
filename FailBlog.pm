@@ -33,7 +33,7 @@ use base qw(RSS::Tree::Node);
 
 sub test {
     my ($self, $item) = @_;
-    return $item->content->findnodes('//param|//iframe')->size > 0;
+    return $item->content->find('//param|//iframe')->size > 0;
 }
 
 *render = \&FailBlog::render;

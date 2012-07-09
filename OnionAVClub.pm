@@ -140,34 +140,35 @@ sub init {
 sub _render_article {
     my ($self, $item) = @_;
 
-    my ($byline) = $item->page->findnodes('//div[%s]', 'byline');
+    my ($byline) = $item->page->find('//div[%s]', 'byline');
 
-    my ($image) = $item->page->findnodes('//div[%s or %s]/img', 'image', 'review_image');
+    my ($image) = $item->page->find('//div[%s or %s]/img', 'image', 'review_image');
 
-    my $grade = $item->page->findvalue(
+    my ($grade) = $item->page->find(
         '//div[%s]/span[%s]', 'title-holder', 'grade'
     );
 
-    my @content = $item->page->findnodes(
+    my @content = $item->page->find(
         '//div[%s]/*[self::p or self::ul or self::ol or self::blockquote]',
         'article_body'
     );
 
     return (
-        $image  ? $self->new_element('p', $image) : (),
-        $byline ? $self->new_element('p', $byline->as_text) : (),
-        defined $grade && $grade =~ /[[:alpha:]]/
-            ? $self->new_element('p', 'Grade: ', ['b', $grade])
-            : (),
+        $image  && $self->new_element('p', $image),
+        $byline && $self->new_element('p', $byline->as_text),
+        $grade  && $grade->as_text =~ /([[:alpha:]])/ &&
+            $self->new_element('p', 'Grade: ', [ 'b', $1 ]),
         @content ? @content : $self->SUPER::render($item),
-        $item->title =~ /Wondermark/ ? $self->new_element('p', $item->body . "") : (),
+        $item->title =~ /Wondermark/
+            ? $self->new_element('p', $item->body . "")
+            : (),
     );
 
 }
 
 sub _render_image {
     my ($self, $item) = @_;
-    return ($item->page->findnodes('//div[%s]/img', 'image'))[0];
+    return ($item->page->find('//div[%s]/img', 'image'))[0];
 }
 
 sub render {
@@ -215,15 +216,15 @@ package OnionAVClub::Games;
 our @ISA = qw(OnionAVClub::Node);
 
 sub new {
-    return shift->SUPER::new('games2', 'Games')->match_title('^Games:');
+    return shift->SUPER::new('games', 'Games')->match_title('^Games:');
 }
 
 sub render {
     my ($self, $item) = @_;
 
-    my ($image)   = $item->page->findnodes('//div[@id="main-content"]/img');
-    my ($byline)  = $item->page->findnodes('//h3[@id="byline"]');
-    my ($content) = $item->page->findnodes('//div[%s]', 'entry');
+    my ($image)   = $item->page->find('//div[@id="main-content"]/img');
+    my ($byline)  = $item->page->find('//h3[@id="byline"]');
+    my ($content) = $item->page->find('//div[%s]', 'entry');
 
     return (
         $image   ? $self->new_element('p', $image) : (),

@@ -13,7 +13,7 @@ sub render {
     my ($self, $item) = @_;
     my $page = $item->page;
     my $oglafpage = $item->page->follow('//a[%s][1]/@href', 'title');
-    my ($image) = $oglafpage && $oglafpage->findnodes('//img[@id="strip"]');
+    my ($image) = $oglafpage && $oglafpage->find('//img[@id="strip"]');
     return $image ? $image : ();
 }
 

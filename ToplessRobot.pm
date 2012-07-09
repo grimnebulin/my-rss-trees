@@ -16,7 +16,7 @@ my $TEXT_LIMIT = 2000;
 
 sub render {
     my ($self, $item) = @_;
-    my ($body) = $item->page->findnodes('//div[%s]', 'Entry_Body') or return;
+    my ($body) = $item->page->find('//div[%s]', 'Entry_Body') or return;
 
     $self->_truncate($body, 'child::div[%s]', 'Tags');
     $self->_truncate($body, '//div[@id="more"]') if _body_too_long($body);
@@ -27,14 +27,14 @@ sub render {
 
 sub _truncate {
     my ($self, $context, @xpath) = @_;
-    for my $node ($self->findnodes($context, @xpath)) {
+    for my $node ($self->find($context, @xpath)) {
         $node->parent->splice_content($node->pindex);
     }
 }
 
 sub _body_too_long {
     my $body = shift;
-    return $body->findnodes('//img|//embed|//iframe')->size > $EMBED_LIMIT
+    return $body->find('//img|//embed|//iframe')->size > $EMBED_LIMIT
         || length($body->as_trimmed_text) > $TEXT_LIMIT;
 }
 

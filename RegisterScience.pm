@@ -12,9 +12,9 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    my ($body) = $item->page->findnodes('//div[@id="article"]');
-    $_->detach for $self->findnodes($body, 'descendant::div[%s or %s]', 'ad-now', 'article-nav');
-    my ($tags) = $body->findnodes('child::div[@id="tags"]');
+    my ($body) = $item->page->find('//div[@id="article"]');
+    $_->detach for $self->find($body, 'descendant::div[%s or %s]', 'ad-now', 'article-nav');
+    my ($tags) = $body->find('child::div[@id="tags"]');
     $tags->parent->splice_content($tags->pindex) if $tags;
     return $body;
 }
