@@ -19,7 +19,8 @@ sub render {
     my ($body) = $item->page->find('//div[%s]', 'Entry_Body') or return;
 
     $self->_truncate($body, 'child::div[%s]', 'Tags');
-    $self->_truncate($body, '//div[@id="more"]') if _body_too_long($body);
+    $self->_truncate($body, 'descendant::div[@id="more"]')
+        if _body_too_long($body);
 
     return $body;
 
