@@ -30,7 +30,7 @@ sub _get_news {
     my @content;
 
     for my $post ($item->page->find('//div[%s]', 'post')) {
-        for my $anchor ($post->find('./div[contains(concat(" ",normalize-space(@class)," ")," heading ")]/div[contains(concat(" ",normalize-space(@class)," ")," title ")]//a')) {
+        for my $anchor ($post->find('./div[%s]/div[%s]//a', 'heading', 'title')) {
             my $href = $anchor->attr('href');
             if (substr($anchor->attr('href'), -length($seotitle)) eq $seotitle) {
                 return $post->find('./p');
