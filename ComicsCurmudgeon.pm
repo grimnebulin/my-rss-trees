@@ -12,7 +12,7 @@ use constant {
 sub render {
     my ($self, $item) = @_;
     $_->detach for $item->content->find(
-        '//p[.//img[contains(@src,"doubleclick")]]'
+        '//p[descendant::img[contains(@src,"doubleclick")]]'
     );
     return $item->content;
 }
