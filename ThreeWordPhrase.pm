@@ -15,13 +15,5 @@ sub render {
     return $item->page->find('//center/img');
 }
 
-# sub _images {
-#     my $item = shift;
-#     return map {
-#         my $uri = $item->absolutize($_, 'src');
-#         $uri->host =~ /threewordphrase/ ? $_ : ();
-#     } $item->page->find('//img[@width > 500]');
-# }
-
 
 1;
