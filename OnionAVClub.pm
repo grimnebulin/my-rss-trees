@@ -35,6 +35,7 @@ my @TV_I_WATCH = (
     'Six Feet Under',
     'The Simpsons .Classic',
     'Animaniacs',
+    'Breaking Bad',
 );
 
 my @TV_I_IGNORE = (
