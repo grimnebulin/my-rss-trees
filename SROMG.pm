@@ -28,7 +28,7 @@ sub render {
 
     if (@comments) {
         splice @comments, 1;
-        for my $sibling ($comments[0]->find('following-sibling::*')) {
+        for my $sibling ($comments[0]->findnodes('following-sibling::*')) {
             last if $sibling->tag ne 'p';
             push @comments, $sibling;
         }
