@@ -17,7 +17,7 @@ sub render {
         my ($image) = $item->page->find('//div[%s and %s]/img', 'post', 'comic');
         return $image ? $image : ();
     } elsif ($item->title =~ /^News/) {
-        return _get_news($item);
+        return $self->_get_news($item);
     }
 
     return;
@@ -25,15 +25,15 @@ sub render {
 }
 
 sub _get_news {
-    my $item = shift;
+    my ($self, $item) = @_;
     my ($seotitle) = $item->link =~ m|/([^/]+?)/?\z| or return;
     my @content;
 
     for my $post ($item->page->find('//div[%s]', 'post')) {
-        for my $anchor ($post->find('./div[%s]/div[%s]//a', 'heading', 'title')) {
+        for my $anchor ($self->find($post, './div[%s]/div[%s]//a', 'heading', 'title')) {
             my $href = $anchor->attr('href');
             if (substr($anchor->attr('href'), -length($seotitle)) eq $seotitle) {
-                return $post->find('./p');
+                return $post->findnodes('./p');
             }
         }
     }
