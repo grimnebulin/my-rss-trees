@@ -11,11 +11,9 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    my ($comic) = $item->page->find('//img[contains(@src,"/files/Comics/")]');
+    my ($comic) = $item->page->find('//img[contains(@src,"/files/")]');
     return $comic if $comic;
-    my ($post)  = $item->page->find('//div[starts-with(@id,"post_message_")]');
-    return $post if $post;
-    return;
+    return $item->page->find('//div[starts-with(@id,"post_message_")]');
 }
 
 1;
