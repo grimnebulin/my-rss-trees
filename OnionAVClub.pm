@@ -124,7 +124,8 @@ sub init {
         _node('newswire', 'Newswire', ': Newswire:'),
         _node('tv', 'TV', '^TV:')->add(
             _node()->match_titles('TV', @TV_I_IGNORE),
-            _node('tv_i_watch', 'TV I Watch')->match_titles('TV', @TV_I_WATCH)
+            _node('tv_i_watch', 'TV I Watch')->match_titles('TV', @TV_I_WATCH),
+            _node('tv_i_watch_now', 'TV I Watch Now')->match_titles('TV', @TV_I_WATCH_NOW),
         ),
         OnionAVClub::Games->new,
         _node('films', 'Films', 'Movie Review'),
