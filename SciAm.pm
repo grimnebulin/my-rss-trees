@@ -12,7 +12,10 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->find('//div[@id="articleContent"]');
+    my ($content) = $item->page->find('//div[@id="articleContent"]')
+        or return;
+    $_->detach for $content->findnodes('child::div[%s]', 'moduleHolder');
+    return $content;
 }
 
 
