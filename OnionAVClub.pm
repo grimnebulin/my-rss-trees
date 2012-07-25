@@ -10,7 +10,7 @@ use constant {
     KEEP_ENCLOSURE => 0,
 };
 
-my @TV_I_WATCH = (
+my @TV_I_WATCH_NOW = (
     'American Dad',
     'Archer',
     'South Park',
@@ -22,20 +22,22 @@ my @TV_I_WATCH = (
     'Bob.s Burgers',
     'Game of Thrones',
     'The Legend of Korra',
-    'Community',
     'Adventure Time',
     'Cheers',
     'Young Justice',
-    'Batman: The Animated Series',
     'Metalocalypse',
+    'Six Feet Under',
+    'Breaking Bad',
+);
+
+my @TV_I_WATCH = (
+    'Batman: The Animated Series',
     'Chappelle.s Show',
     'Firefly',
     'Babylon 5',
     'Police Squad',
-    'Six Feet Under',
     'The Simpsons .Classic',
     'Animaniacs',
-    'Breaking Bad',
 );
 
 my @TV_I_IGNORE = (
@@ -44,7 +46,7 @@ my @TV_I_IGNORE = (
     'The Office',
     'Scrubs',
     'Survivor',
-    'Survivor \(Classic\)',
+    'Survivor .Classic',
     'Leverage',
     'Hell On Wheels',
     'Saturday Night Live',
