@@ -153,14 +153,14 @@ sub _render_article {
     );
 
     my @content = $item->page->find(
-        '//div[%s]/*[self::p or self::ul or self::ol or self::blockquote]',
+        '//div[%s]/*[self::p or self::ul or self::ol or self::blockquote or self::hr]',
         'article_body'
     );
 
     return (
         $image  && $self->new_element('p', $image),
         $byline && $self->new_element('p', $byline->as_text),
-        $grade  && $grade->as_text =~ /([[:alpha:]])/ &&
+        $grade  && $grade->as_text =~ /([[:alpha:]][-+]?)/ &&
             $self->new_element('p', 'Grade: ', [ 'b', $1 ]),
         @content ? @content : $self->SUPER::render($item),
         $item->title =~ /Wondermark/
