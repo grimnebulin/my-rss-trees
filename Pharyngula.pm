@@ -7,6 +7,7 @@ use constant {
     NAME  => 'pharyngula',
     TITLE => 'Pharyngula',
     FEED  => 'http://feeds.feedburner.com/freethoughtblogs/pharyngula',
+    KEEP_GUID => 1,
 };
 
 
