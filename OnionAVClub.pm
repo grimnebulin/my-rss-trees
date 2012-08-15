@@ -135,7 +135,9 @@ sub init {
         _node('music', 'Music', '^Music:'),
         OnionAVClub::RedMeat->new,
         _node('geekery', 'Geekery', 'Gateways to Geekery'),
-        _node('comedy', 'Comedy', '^Comedy:'),
+        _node('comedy', 'Comedy', '^Comedy:')->add(
+            _node()->match_title('Podcast Episode'),
+        ),
         _node('wondermark', 'Wondermark', 'Wondermark'),
     );
 
