@@ -14,7 +14,7 @@ sub render {
     my ($self, $item) = @_;
     my ($image) = $item->description->find('//img');
     $image->postinsert(
-        $self->new_element('p', [ 'i', $image->attr('title') ])
+        $self->new_element('p', [ 'i', $image->attr('title', undef) ])
     ) if $image;
     return $item->description;
 }
