@@ -14,7 +14,8 @@ sub render {
     my ($self, $item) = @_;
     my ($body) = $item->page->find('//div[@id="article"]');
     $_->detach for $self->find(
-        $body, 'descendant::div[%s or %s]', 'ad-now', 'article-nav', 'related-keywords'
+        $body, 'descendant::div[%s or %s or %s or %s or %s)]|descendant::h2',
+        'ad-now', 'article-nav', 'related-keywords', 'dateline', 'top'
     );
     my ($tags) = $body->find('child::div[@id="tags"]');
     $tags->parent->splice_content($tags->pindex) if $tags;
