@@ -12,10 +12,9 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    $_->detach for $item->description->find(
+    return $item->description->remove(
         '//p[descendant::a[contains(@href,"doubleclick")]]|//img[@height="1"]'
     );
-    return $item->description;
 }
 
 1;

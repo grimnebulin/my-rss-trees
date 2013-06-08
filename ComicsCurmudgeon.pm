@@ -11,10 +11,9 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    $_->detach for $item->content->find(
-        '//p[descendant::img[contains(@src,"doubleclick")]]'
+    return $item->content->remove(
+        '//map|//*[self::p or self::table][descendant::img[contains(@src,"doubleclick") or contains(@src,"projectwonderful")]]'
     );
-    return $item->content;
 }
 
 

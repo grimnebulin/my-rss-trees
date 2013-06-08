@@ -14,7 +14,7 @@ sub render {
     my ($self, $item) = @_;
     my ($content) = $item->page->find('//div[@id="articleContent"]')
         or return;
-    $_->detach for $content->findnodes('child::div[%s]', 'moduleHolder');
+    $self->remove($content, 'div[%s]', 'moduleHolder');
     return $content;
 }
 

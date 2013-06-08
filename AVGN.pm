@@ -12,10 +12,9 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    $_->detach for $item->content->find(
-        '//p[descendant::a[contains(@href,"doubleclick")]]|//div[%s]', 'feedflare'
+    return $item->content->remove(
+        '//p[.//a[contains(@href,"doubleclick")]]|//div[%s]', 'feedflare'
     );
-    return $item->content;
 }
 
 
