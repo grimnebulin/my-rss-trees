@@ -1,6 +1,6 @@
 package OnionAVClub;
 
-use base qw(RSS::Tree);
+use parent qw(RSS::Tree);
 use strict;
 
 use constant {
@@ -189,7 +189,7 @@ sub render {
 
 package OnionAVClub::Node;
 
-use base qw(RSS::Tree::Node);
+use parent qw(RSS::Tree::Node);
 
 *render = *OnionAVClub::_render_article;
 

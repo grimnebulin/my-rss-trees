@@ -1,6 +1,6 @@
 package ThreeWordPhrase;
 
-use base qw(RSS::Tree);
+use parent qw(RSS::Tree);
 use strict;
 
 use constant {
