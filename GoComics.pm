@@ -6,7 +6,15 @@ use utf8;
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->find('//img[%s and attribute::onload]', 'strip');
+    my @img = sort { _area($a) <=> _area($b) }
+              $item->page->find('//p[%s]//img[%s]', 'feature_item', 'strip')
+        or return;
+    return $img[-1];
+}
+
+sub _area {
+    my $img = shift;
+    return $img->attr('width') * $img->attr('height');
 }
 
 my @child;
