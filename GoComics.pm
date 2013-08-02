@@ -30,7 +30,7 @@ _comic('Ballard', 'ballardstreet', 'ballard', 'Ballard Street');
 _comic('BloomCounty', 'bloomcounty', 'bloomcounty', 'Bloom County');
 _comic('CalvinAndHobbes', 'calvinandhobbes', 'calvin', 'Calvin and Hobbes');
 _comic('CulDeSac', 'culdesac', 'culdesac', 'Cul de Sac');
-_comic('DancingBug', 'tomethedancingbug', 'dancingbug', 'Tom the Dancing Bug');
+_comic('DancingBug', 'tomthedancingbug', 'dancingbug', 'Tom the Dancing Bug');
 _comic('Doonesbury', 'doonesbury', 'doonesbury', 'Doonesbury');
 _comic('Lio', 'lio', 'lio', 'Liō');
 _comic('NonSequitur', 'nonsequitur', 'nonsequitur', 'Non Sequitur');
