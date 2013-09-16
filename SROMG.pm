@@ -7,6 +7,7 @@ use constant {
     FEED  => 'http://www.mezzacotta.net/garfield/rss.xml',
     NAME  => 'sromg',
     TITLE => 'Square Root of Minus Garfield',
+    KEEP_GUID => 1,
 };
 
 sub uri_for {
@@ -16,7 +17,7 @@ sub uri_for {
 
 sub postprocess_item {
     my ($self, $item) = @_;
-    $item->{guid} .= '&foo=bar';
+    $item->set_link($item->guid) if !$item->link;
 }
 
 sub render {
