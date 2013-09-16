@@ -12,18 +12,16 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    my @rendered = $self->SUPER::render($item);
+    my @verdict;
 
-    my ($divider) = $item->page->find('//img[contains(@src,"content-divider")]');
-
-    if ($divider) {
-        my $verdict = $divider->parent->right->as_text;
-        unshift @rendered, $self->new_element(
-            'p', 'Verdict: ', $verdict ? ['b', $verdict] : ['i', 'not found']
+    if (my ($divider) = $item->page->find('//img[contains(@src,"content-divider")]')) {
+        my $verdict = $divider->parent->right->as_trimmed_text;
+        @verdict = $self->new_element(
+            'p', 'Verdict: ', $verdict ? [ 'b', $verdict ] : [ 'i', 'not found' ]
         );
     }
 
-    return @rendered;
+    return (@verdict, $self->SUPER::render($item));
 
 }
 
