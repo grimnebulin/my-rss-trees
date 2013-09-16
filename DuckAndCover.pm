@@ -1,11 +1,11 @@
 package DuckAndCover;
 
 use Image::Size ();
-use base qw(RSS::Tree);
+use parent qw(RSS::Tree);
 use strict;
 
 use constant {
-    FEED     => 'http://duckcover.blogspot.com/feeds/posts/default',
+    FEED     => 'http://feeds2.feedburner.com/blogspot/DuckCover',
     NAME     => 'duckandcover',
     TITLE    => 'Duck And Cover',
     # To force Feedburner to return an RSS feed rather than an Atom feed:
@@ -54,7 +54,7 @@ sub _cached_strip {
     opendir my $dh, $STRIP_DIR or return;
     return 0 < grep {
         substr($_, 0, length($date)) eq $date &&
-        substr($_, length($date)) =~ /\.[^.]+\z/
+        substr($_, length($date)) =~ /^\.[^.]+\z/
     } readdir $dh;
 }
 
