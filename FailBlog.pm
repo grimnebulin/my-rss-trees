@@ -9,34 +9,45 @@ use constant {
     TITLE => 'Fail Blog',
 };
 
+
 sub init {
     my $self = shift;
-    $self->add(
-        FailBlogNode->new('failblogvideo', 'Fail Blog Video')
-    );
+    $self->add(FailBlogVideo->new('failblogvideo', 'Fail Blog Video'));
 }
 
 sub test {
     my ($self, $item) = @_;
-    return $item->title !~ /Mini Clip Show/;
+    return $item->title !~ /Mini Clip Show/
+        && 0 == grep { /\bautoco/i } $item->categories;
 }
 
 sub render {
     my ($self, $item) = @_;
-    return $item->content;
+
+    $item->content->remove('//script');
+
+    if (my ($bound) = $item->content->find(
+        '//div[.//a[contains(@href,"cheezburger.com/tag/")]]'
+    )) {
+        my ($prev) = $bound->findnodes(
+            'preceding-sibling::*[1][contains(normalize-space()," by:")]'
+        );
+        $bound->parent->splice_content(($prev || $bound)->pindex);
+    }
+
+    return;
+
 }
 
 
-package FailBlogNode;
+package FailBlogVideo;
 
-use base qw(RSS::Tree::Node);
+use parent qw(RSS::Tree::Node);
 
 sub test {
     my ($self, $item) = @_;
     return $item->content->find('//param|//iframe')->size > 0;
 }
-
-*render = \&FailBlog::render;
 
 
 1;
