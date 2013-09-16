@@ -11,12 +11,15 @@ use constant {
 };
 
 
+sub init {
+    shift->match_creator('pz');
+}
+
 sub render {
     my ($self, $item) = @_;
-    $_->detach for $item->content->find(
-        '//p[descendant::a[contains(@href,"doubleclick")]]|//img[@height="1"]'
-    );
-    return $item->content;
+    my ($content) = $item->page->find('//div[%s]', 'entry-content') or return;
+    $self->truncate($content, 'div[%s]', 'sharedaddy');
+    return $content;
 }
 
 
