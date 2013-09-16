@@ -6,7 +6,7 @@ use strict;
 use constant {
     NAME  => 'apod',
     TITLE => 'APOD',
-    FEED  => 'http://antwrp.gsfc.nasa.gov/apod.rss',
+    FEED  => 'http://apod.nasa.gov/apod.rss',
 };
 
 
@@ -16,13 +16,11 @@ sub render {
     my ($pic) = $h1->findnodes('following-sibling::p[last()]') or return;
     my $top   = $h1->parent;
 
-    for my $img ($pic->findnodes('.//img')) {
-        $img->attr('target', '_blank');
-    }
-
     my ($tomorrow) = $top->findnodes(
-        'following-sibling::*[contains(string(),"Tomorrow\'s picture")]'
+        'following-sibling::*[contains(.,"Tomorrow\'s picture")]'
     ) or return;
+
+    $_->attr('target', '_blank') for $pic->findnodes('.//img');
 
     my @text = ($top->parent->content_list)[
         $top->pindex + 1 .. $tomorrow->pindex - 1
