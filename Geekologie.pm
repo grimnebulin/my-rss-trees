@@ -4,7 +4,7 @@ use parent qw(RSS::Tree);
 use strict;
 
 use constant {
-    FEED  => 'http://www.geekologie.com/index.xml',
+    FEED  => 'http://feeds.feedburner.com/geekologie/iShm',
     NAME  => 'geekologie',
     TITLE => 'Geekologie',
 };
