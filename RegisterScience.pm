@@ -12,10 +12,13 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    my ($body) = $item->page->find('//div[@id="article"]');
+    my ($body) = $item->page->find('//div[@id="article"]') or return;
     $self->remove(
-        $body, 'descendant::div[%s or %s or %s or %s or %s)]|descendant::h2',
-        'ad-now', 'article-nav', 'related-keywords', 'dateline', 'top'
+        $body,
+        './/div[@id="body_side" or @id="in_article_forums" or %s or %s or %s ' .
+        'or %s or %s]|.//h2|.//div[%s]/iframe|.//a[contains(@href,"doubleclick")]' .
+        '|.//script',
+        'ad-now', 'article-nav', 'related-keywords', 'dateline', 'top', 'byline'
     );
     $self->truncate($body, 'div[@id="tags"]');
     return $body;
