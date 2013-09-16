@@ -12,7 +12,9 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->find('//div[%s]', 'article-content');
+    my ($content) = $item->page->find('//div[%s]', 'article-content') or return;
+    $self->remove($content, 'aside');
+    return $content;
 }
 
 
