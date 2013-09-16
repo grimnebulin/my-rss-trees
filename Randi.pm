@@ -10,9 +10,8 @@ use constant {
 };
 
 
-sub test {
-    my ($self, $item) = @_;
-    return $item->author =~ /randi\@randi/;
+sub init {
+    shift->match_author('randi');
 }
 
 
