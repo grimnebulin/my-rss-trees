@@ -12,7 +12,7 @@ use constant {
 sub render {
     my ($self, $item) = @_;
     return $item->page->find(
-        '//div[%s]/child::*[not(self::script or self::iframe or self::div[%s])]',
+        '//div[%s]/*[not(self::script or self::iframe or self::div[%s])]',
         'entry-content', 'sharedaddy'
     );
 }
