@@ -12,7 +12,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->page->find('//div[%s]/p[not(attribute::*)]', 'entry');
+    return $item->page->find('//div[%s]/p[not(@*)]', 'entry');
 }
 
 
