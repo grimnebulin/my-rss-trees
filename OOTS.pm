@@ -7,7 +7,7 @@ use constant {
     NAME  => 'oots',
     TITLE => 'Order of the Stick',
     FEED  => 'http://www.giantitp.com/comics/oots.rss',
-    LIMIT => 10,
+    LIMIT => 3,
 };
 
 
