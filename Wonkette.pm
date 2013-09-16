@@ -13,15 +13,18 @@ use constant {
 sub render {
     my ($self, $item) = @_;
 
-    my ($content) = $item->page->find('//div[%s]', 'entry-content');
+    my ($content) = $item->page->find('//div[%s]', 'entry-content') or return;
     $self->truncate($content, './/div[@id="post-supplement"]');
     $self->remove($content, './/div[contains(@id,"-ad-")]');
 
-    if (my ($img) = $content->findnodes('.//img')) {
+    my ($tag) = $item->page->find('//div[%s]/a', 'primary_tag');
+    $tag = $self->new_element('h3', $tag->as_trimmed_text) if $tag;
+
+    if (my ($img) = $content->findnodes('.//*[self::img or self::iframe]')) {
         if (my ($parent) = $img->findnodes('parent::a')) {
             $parent->replace_with($img);
         }
-        $img->preinsert($self->new_element('div'))->left->push_content($img);
+        $self->wrap($img, 'div');
         if (my $title = $img->attr('title', undef)) {
             $img->postinsert(
                 $self->new_element('div', [ 'i', $title ])
@@ -29,7 +32,7 @@ sub render {
         }
     }
 
-    return $content->content_list;
+    return ($tag, $content->content_list);
 
 }
 
