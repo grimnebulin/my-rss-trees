@@ -7,20 +7,19 @@ use constant {
     FEED  => 'http://www.joyoftech.com/joyoftech/jotblog/index.xml',
     NAME  => 'joyoftech',
     TITLE => 'Joy Of Tech',
+    LIMIT => 5,
 };
 
 
 sub render {
     my ($self, $item) = @_;
 
-    return $self->SUPER::render($item)
-        if 0 == (my ($thumbnail) = $item->description->find('//a/img'));
+    my ($thumbnail) = $item->description->find('//a[img]') or return;
 
-    my ($image) = $self->fetch($thumbnail->parent->attr('href'))
-                       ->find('//img[contains(@src,"joyimages")]');
-    if ($image) {
-        $item->absolutize($image, 'src');
-        $thumbnail->parent->replace_with($image);
+    if (my ($image) = $self->get($thumbnail->attr('href'))
+                           ->find('//img[contains(@src,"joyimages")]')) {
+        $thumbnail->postinsert($image->as_HTML);
+        $thumbnail->replace_with($image);
     }
 
     return $item->description;
