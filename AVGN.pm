@@ -12,7 +12,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    return $item->content->remove(
+    return $item->description->remove(
         '//p[.//a[contains(@href,"doubleclick")]]|//div[%s]', 'feedflare'
     );
 }
