@@ -10,31 +10,21 @@ use constant {
     KEEP_ENCLOSURE => 0,
 };
 
-my @TV_I_WATCH_NOW = (
-    'American Dad',
-    'Archer',
-    'South Park',
-    'The Big Bang Theory',
-    'Dexter',
-    'Beavis and Butt-Head',
-    'Deep Space Nine',
-    'Bob.s Burgers',
-    'Game of Thrones',
-    'Legend of Korra',
-    'Adventure Time',
-    '^Cheers',
-    'Metalocalypse',
-    'Six Feet Under',
-    'Breaking Bad',
-    '^Community',
-    'Walking Dead',
-    'Gravity Falls',
-    'Venture Bros',
+my @TV_I_WATCH2 = (
+    [ 'amdad'  , 'American Dad'                    ],
+    [ 'bigbang', 'Big Bang Theory'                 ],
+    [ 'ds9'    , 'Deep Space Nine'                 ],
+    [ 'bob'    , 'Bob.s Burgers', q(Bob's Burgers) ],
+    # [ 'got'    , 'Game of Thrones'                 ],
+    [ 'korra'  , 'Legend of Korra'                 ],
+    [ 'at'     , 'Adventure Time'                  ],
+    [ 'sixfeet', 'Six Feet Under'                  ],
+    [ 'walking', 'Walking Dead'                    ],
+    [ 'sunny'  , 'Always Sunny'                    ],
 );
 
-my @TV_I_WATCH = (
+my @TV_I_WATCHED = (
     'Batman: The Animated Series',
-    'Firefly',
     'Babylon 5',
     'The Simpsons .Classic',
 );
@@ -118,30 +108,30 @@ sub init {
     my $self = shift;
 
     $self->add(
-        _node('savagelove', 'Savage Love', 'Savage Love:'),
-        _node('greatjob', 'Great Job', 'Great Job'),
-        _node('newswire', 'Newswire', ': Newswire:'),
-        _node()->match_titles(@TV_I_IGNORE),
-        _node('tv_i_watch', 'TV I Watch')->match_titles(@TV_I_WATCH),
-        _node('tv_i_watch_now', 'TV I Watch Now')->match_titles(@TV_I_WATCH_NOW),
-        _node('tv', 'TV', '^TV:'),
-        OnionAVClub::Games->new,
-        _node('films', 'Films', 'Movie Review'),
-        _node('film', 'Film', '^(?:Film|DVD):'),
-        _node('comics', 'Comics Panel', 'Comics Panel|Big Issues'),
-        _node('books', 'Books', '^Books:'),
-        _node('music', 'Music', '^Music:'),
-        OnionAVClub::RedMeat->new,
-        _node('geekery', 'Geekery', 'Gateways to Geekery'),
-        _node('comedy', 'Comedy', '^Comedy:')->add(
-            _node()->match_title('Podcast Episode'),
+        RSS::Tree::Node->new('savagelove', 'Savage Love')->match_title('Savage Love:'),
+        RSS::Tree::Node->new('greatjob', 'Great Job')->match_title('Great Job'),
+        RSS::Tree::Node->new('newswire', 'Newswire')->match_title(': Newswire:'),
+        RSS::Tree::Node->new->match_title(_all_titles(@TV_I_IGNORE)),
+        RSS::Tree::Node->new('tv_i_watch', 'TV I Watch')
+            ->match_title(_all_titles(@TV_I_WATCHED)),
+        (map RSS::Tree::Node->new($$_[0], $$_[2] || $$_[1])
+                 ->match_title($$_[1]), @TV_I_WATCH2),
+        RSS::Tree::Node->new('tv', 'TV')->match_title('^TV:'),
+        RSS::Tree::Node->new('films', 'Films')->match_title('Movie Review'),
+        RSS::Tree::Node->new('film', 'Film')->match_title('^(?:Film|DVD):'),
+        RSS::Tree::Node->new('comics', 'Comics Panel')
+            ->match_title('Comics Panel|Big Issues'),
+        RSS::Tree::Node->new('books', 'Books')->match_title('^Books:'),
+        RSS::Tree::Node->new('music', 'Music')->match_title('^Music:'),
+        RSS::Tree::Node->new('geekery', 'Geekery')->match_title('Gateways to Geekery'),
+        RSS::Tree::Node->new('comedy', 'Comedy')->match_title('^Comedy:')->add(
+            RSS::Tree::Node->new->match_title('Podcast Episode'),
         ),
-        _node('wondermark', 'Wondermark', 'Wondermark'),
     );
 
 }
 
-sub _render_article {
+sub render_article {
     my ($self, $item) = @_;
 
     my ($byline) = $item->page->find('//div[%s]', 'byline');
@@ -170,75 +160,36 @@ sub _render_article {
 
 }
 
-sub _render_image {
+sub render_image {
     my ($self, $item) = @_;
-    return ('<p>PRE</p>', ($item->page->find('//div[%s]/img', 'image'))[0], '<p>POST</p>');
+    return ($item->page->find('//div[%s]/img', 'image'))[0];
 }
 
 sub render {
     my ($self, $item) = @_;
     return $item->title =~ /: Tolerability Index/
-        ? $self->_render_image($item)
-        : $self->_render_article($item);
+        ? $self->render_image($item)
+        : $self->render_article($item);
 }
 
-
-{
-
-package OnionAVClub::Node;
-
-use parent qw(RSS::Tree::Node);
-
-*render = *OnionAVClub::_render_article;
-
-sub match_titles {
-    my ($self, @titles) = @_;
-    my $title_re = join '|', @titles;
-    $self->match_title("(?:$title_re)\\b");
-}
-
+sub _all_titles {
+    return '(?:' . join('|', @_) . ')\b';
 }
 
 {
 
 package OnionAVClub::RedMeat;
 
-our @ISA = qw(OnionAVClub::Node);
+use parent -norequire, qw(OnionAVClub::Node);
 
 sub new {
     return shift->SUPER::new('redmeat', 'Red Meat')->match_title('Red Meat');
 }
 
-*render = *OnionAVClub::_render_image;
-
-}
-
-{
-
-package OnionAVClub::Games;
-
-our @ISA = qw(OnionAVClub::Node);
-
-sub new {
-    return shift->SUPER::new('games', 'Games')->match_title('^Games:');
-}
-
 sub render {
-    my ($self, $item) = @_;
-
-    my ($image)   = $item->page->find('//div[@id="main-content"]/img');
-    my ($byline)  = $item->page->find('//h3[@id="byline"]');
-    my ($content) = $item->page->find('//div[%s]', 'entry');
-
-    return (
-        $image   ? $self->new_element('p', $image) : (),
-        $byline  ? $self->new_element('p', $byline->as_text) : (),
-        $content ? $content : $self->SUPER::render($item),
-    );
-
+    return shift->root->render_image(@_);
 }
 
 }
-
 
 1;
