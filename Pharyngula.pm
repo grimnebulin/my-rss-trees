@@ -11,8 +11,11 @@ use constant {
 };
 
 
-sub init {
-    shift->match_creator('pz');
+sub test {
+    my ($self, $item) = @_;
+    return $item->creator =~ /pz/i
+        && $item->title !~ /\A\[/
+        && $item->title !~ /\]\z/
 }
 
 sub render {
