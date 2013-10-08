@@ -13,7 +13,11 @@ use constant {
 sub init {
     my $self = shift;
     $self->add(
-        RSS::Tree::Node->new('sawbuck', 'Sawbuck Gamer')->match_title('Sawbuck Gamer')
+        RSS::Tree::Node->new('sawbuck', 'Sawbuck Gamer (Other)')
+                       ->match_title('Sawbuck Gamer')
+                       ->add(
+            IosGames->new('sawbuckios', 'Sawbuck Gamer (iOS)')
+        ),
     );
 }
 
@@ -29,5 +33,22 @@ sub render {
     return $content;
 }
 
+
+{
+
+package IosGames;
+
+use parent qw(RSS::Tree::Node);
+
+sub test {
+    my ($self, $item) = @_;
+    my $ios = $item->cache->{is_ios} ||= do {
+        my ($meta) = $item->page->find('//p[%s]', 'metadata');
+        $meta && $meta->as_trimmed_text =~ /iP/ ? 'yes' : 'no';
+    };
+    return $ios eq 'yes';
+}
+
+}
 
 1;
