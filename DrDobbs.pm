@@ -1,5 +1,6 @@
 package DrDobbs;
 
+use URI;
 use parent qw(RSS::Tree);
 use strict;
 
@@ -17,6 +18,7 @@ sub render {
     my @content;
 
     while ($page) {
+        $page->remove('//div[%s]', 'article-resources');
         my $xpath   = '//*[@id="IG_description" or @id="IG_main_image" or %s]';
         my @classes = qw(story);
         if (++$count == 1) {
@@ -26,7 +28,10 @@ sub render {
         push @content, $page->find($xpath, @classes);
         my ($next) = grep { $_->as_trimmed_text =~ /\b next \b/xi }
             $page->find('//div[%s]//a', 'nav1');
-        $page = $next && $page->open($next->attr('href'));
+        $page = $next && do {
+            my $u = URI->new_abs($next->attr('href'), ???);
+            my $response = $self->agent->get($u);
+        $page = $next && $page->get($next->attr('href'));
         push @content, '<hr>' if $page;
     }
 
