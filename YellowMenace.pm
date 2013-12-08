@@ -12,7 +12,7 @@ use constant {
 
 sub test {
     my ($self, $item) = @_;
-    return $item->creator !~ /Figtree/;
+    return $item->creator !~ /Figtree|Sanchez/;
 }
 
 
