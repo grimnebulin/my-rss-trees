@@ -14,10 +14,9 @@ sub render {
     my ($self, $item) = @_;
     my @verdict;
 
-    if (my ($divider) = $item->page->find('//img[contains(@src,"content-divider")]')) {
-        my $verdict = $divider->parent->right->as_trimmed_text;
+    if (my ($verdict) = $item->page->find('//img[contains(@src,"content-divider")]/../preceding-sibling::noindex')) {
         @verdict = $self->new_element(
-            'p', 'Verdict: ', $verdict ? [ 'b', $verdict ] : [ 'i', 'not found' ]
+            'p', 'Verdict: ', [ 'b', $verdict->as_trimmed_text ]
         );
     }
 
