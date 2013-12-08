@@ -10,16 +10,22 @@ use constant {
 };
 
 
+sub test {
+    my ($self, $item) = @_;
+    my $category = $item->cache->{category} ||= _category($item->page);
+    return $category !~ m#^_(?:Front Page News|Features\s*/\s*Articles|Twitter|Reviews|Video Game Article|Current Release)#;
+}
+
 sub render {
     my ($self, $item) = @_;
-
-    if (my ($category) = $item->page->find('//div[%s and %s]', 'cavity', 'top')) {
-        my $prefix = $category->as_trimmed_text =~ />\s*(.+)/s ? $1 : 'XXX';
-        $item->set_title("$prefix: " . $item->title);
-    }
-
+    $item->set_title(substr(_category($item->page), 1) . ': ' . $item->title);
     return;
+}
 
+sub _category {
+    my $page = shift;
+    my ($category) = $page->find('//div[%s and %s]', 'cavity', 'top') or return;
+    return $category->as_trimmed_text =~ />\s*(.+)/s ? "_$1" : '_Unknown';
 }
 
 
