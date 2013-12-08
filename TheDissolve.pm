@@ -39,7 +39,7 @@ sub render {
 
     $self->wrap($_, 'div') for $content->findnodes('.//img');
 
-    return ($author, @images, $stars, $content,);
+    return ($author, @images, $stars, $content);
 
 }
 
