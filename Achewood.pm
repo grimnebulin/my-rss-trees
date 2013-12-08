@@ -16,7 +16,7 @@ sub render {
     my ($img) = $item->page->find('//img[%s]', 'comic') or return;
     my ($title) = $img->attr('title', undef);
     $title = $self->new_element('div', [ 'i', $title ]) if $title;
-    return ($img, $title ? $title : ());
+    return ($img, $title);
 }
 
 
