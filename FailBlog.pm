@@ -40,6 +40,8 @@ sub render {
 }
 
 
+{
+
 package FailBlogVideo;
 
 use parent qw(RSS::Tree::Node);
@@ -47,6 +49,8 @@ use parent qw(RSS::Tree::Node);
 sub test {
     my ($self, $item) = @_;
     return $item->content->find('//param|//iframe')->size > 0;
+}
+
 }
 
 
