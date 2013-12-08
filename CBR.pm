@@ -14,6 +14,7 @@ sub render {
     my ($self, $item) = @_;
     my ($content) = $item->page->find('//div[@id="article-content"]') or return;
     $self->remove($content, 'div[a[@href="#storyContinued"]]');
+    $self->remove($content, './/iframe');
     $self->truncate($content, 'p[%s]', 'forum');
     return $content;
 }
