@@ -13,11 +13,13 @@ use constant {
 sub render {
     my ($self, $item) = @_;
 
-    for my $e ($item->content->find('//img[following-sibling::node()]')) {
-        $self->wrap($e, 'div');
-    }
+    my ($content) = $item->page->find('//div[@id="content"]/article[1]')
+        or return;
 
-    return;
+    $self->remove($content, './/div[%s]', 'entry-meta');
+    $self->remove($content, './/*[self::script or self::footer]');
+
+    return $content;
 
 }
 
