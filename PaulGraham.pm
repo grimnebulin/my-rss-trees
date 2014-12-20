@@ -1,6 +1,6 @@
 package PaulGraham;
 
-use parent qw(BasicFeed RSS::Tree);
+use parent qw(RSS::Tree);
 use strict;
 
 use constant {
@@ -8,9 +8,13 @@ use constant {
     TITLE   => 'Paul Graham',
     FEED    => 'http://www.aaronsw.com/2002/feeds/pgessays.rss',
     LIMIT   => 3,
-    CONTENT => '//table[not(.//table)]',
 };
 
+
+sub render {
+    my ($self, $item) = @_;
+    return $item->page->find('//p');
+}
 
 
 1;

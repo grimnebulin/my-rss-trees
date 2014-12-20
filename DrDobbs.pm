@@ -29,9 +29,11 @@ sub render {
         my ($next) = grep { $_->as_trimmed_text =~ /\b next \b/xi }
             $page->find('//div[%s]//a', 'nav1');
         $page = $next && do {
-            my $u = URI->new_abs($next->attr('href'), ???);
-            my $response = $self->agent->get($u);
-        $page = $next && $page->get($next->attr('href'));
+            my $nexturi = $page->absolute_uri($next->attr('href'));
+            my $response = $self->agent->get($nexturi);
+            $response->is_success &&
+                $self->new_page($nexturi, $response->decoded_content);
+        };
         push @content, '<hr>' if $page;
     }
 

@@ -24,7 +24,8 @@ sub render {
 
 sub _category {
     my $page = shift;
-    my ($category) = $page->find('//div[%s and %s]', 'cavity', 'top') or return;
+    my ($category) = $page->find('//div[%s and %s]', 'cavity', 'top')
+        or return;
     return $category->as_trimmed_text =~ />\s*(.+)/s ? "_$1" : '_Unknown';
 }
 

@@ -17,7 +17,7 @@ sub init {
 
 sub render {
     my ($self, $item) = @_;
-    my ($image) = $item->page->find('//div[%s and %s]/img', 'post', 'comic');
+    my ($image) = $item->page->find('//div[@id="comicFrame"]//img');
     return $image ? $image : ();
 }
 

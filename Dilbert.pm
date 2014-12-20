@@ -14,7 +14,6 @@ use constant {
 sub render {
     my ($self, $item) = @_;
     my ($img) = $item->page->find('//div[%s]/img', 'STR_Image') or return;
-    $img->attr('onload', undef);  # Probably unnecessary.
     return $img;
 }
 

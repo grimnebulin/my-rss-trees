@@ -12,8 +12,9 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-    my ($image) = $item->page->find('//div[%s]/img', 'comic') or return;
-    return $image;
+    my ($image) = $item->page->find('//div[%s]//img', 'comic') or return;
+    my ($body) = $item->page->find('//div[%s]', 'body');
+    return ($image, $body);
 }
 
 

@@ -27,6 +27,7 @@ sub _comic {
     *{ "${pkg}::FEED"  } = sub { $feed };
     *{ "${pkg}::NAME"  } = sub { $name };
     *{ "${pkg}::TITLE" } = sub { $title };
+    *{ "${pkg}::ITEM_CACHE_SECONDS" } = sub { 60 * 60 };
     push @child, $pkg;
 }
 

@@ -1,23 +1,18 @@
 package Slog;
 
-use parent qw(RSS::Tree);
+use parent qw(BasicFeed RSS::Tree);
 use strict;
 
 use constant {
-    FEED  => 'http://feeds.thestranger.com/stranger/slog',
-    NAME  => 'slog',
-    TITLE => 'Savage Slog',
+    FEED    => 'http://feeds.thestranger.com/stranger/slog',
+    NAME    => 'slog',
+    TITLE   => 'Savage Slog',
+    CONTENT => [ '//div[%s]', 'postBody' ],
 };
 
 
-sub test {
-    my ($self, $item) = @_;
-    return $item->creator =~ /savage/i;
-}
-
-sub render {
-    my ($self, $item) = @_;
-    return $item->page->find('//div[%s]', 'postBody');
+sub init {
+    shift->match_creator('savage');
 }
 
 
