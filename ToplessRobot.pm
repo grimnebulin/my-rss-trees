@@ -1,6 +1,6 @@
 package ToplessRobot;
 
-use parent qw(RSS::Tree);
+use parent qw(MaybeLengthy);
 use strict;
 
 use constant {
@@ -9,26 +9,18 @@ use constant {
     TITLE => 'Topless Robot',
 };
 
-my $EMBED_LIMIT = 3;
 
-my $TEXT_LIMIT = 2000;
-
-
-sub render {
-    my ($self, $item) = @_;
-    my ($body) = $item->page->find('//div[%s]', 'Entry_Body') or return;
-
+sub get_body {
+    my ($self, $page) = @_;
+    my ($body) = $page->find('//div[%s or %s]', 'Entry_Body', 'Scribol') or return;
     $self->truncate($body, 'div[%s]', 'Tags');
-    $self->truncate($body, './/div[@id="more"]') if _body_too_long($body);
-
     return $body;
-
 }
 
-sub _body_too_long {
-    my $body = shift;
-    return $body->findnodes('//img|//embed|//iframe')->size > $EMBED_LIMIT
-        || length($body->as_trimmed_text) > $TEXT_LIMIT;
+sub abbreviate {
+    my ($self, $item, $body) = @_;
+    $self->truncate($body, './/div[@id="more"]');
+    return $body;
 }
 
 
