@@ -8,20 +8,24 @@ use constant {
     NAME  => 'avclub',
     TITLE => 'AV Club',
     KEEP_ENCLOSURE => 0,
+    AUTORESOLVE => 'follow',
 };
 
 my @TV_I_WATCH2 = (
-    [ 'amdad'  , 'American Dad'                    ],
-    [ 'bigbang', 'Big Bang Theory'                 ],
-    [ 'ds9'    , 'Deep Space Nine'                 ],
-    [ 'bob'    , 'Bob.s Burgers', q(Bob's Burgers) ],
+    # [ 'amdad'  , 'American Dad'                    ],
+    # [ 'archer' , 'Archer'                          ],
+    # [ 'bigbang', 'Big Bang Theory'                 ],
+    # [ 'ds9'    , 'Deep Space Nine'                 ],
+    # [ 'bob'    , 'Bob.s Burgers', q(Bob's Burgers) ],
     # [ 'got'    , 'Game of Thrones'                 ],
-    [ 'korra'  , 'Legend of Korra'                 ],
-    [ 'at'     , 'Adventure Time'                  ],
+    # [ 'korra'  , 'Legend of Korra'                 ],
+    # [ 'at'     , 'Adventure Time'                  ],
     # [ 'sixfeet', 'Six Feet Under'                  ],
-    [ 'walking', 'Walking Dead'                    ],
-    [ 'sunny'  , 'Always Sunny'                    ],
-    [ 'southpark', 'South Park' ],
+    # [ 'walking', 'Walking Dead'                    ],
+    # [ 'sunny'  , 'Always Sunny'                    ],
+    # [ 'southpark', 'South Park' ],
+    # [ 'community', 'Community' ],
+    [ 'gravityfalls', 'Gravity Falls' ],
 );
 
 my @TV_I_WATCHED = (
@@ -33,27 +37,30 @@ my @TV_I_WATCHED = (
 
 sub init {
     my $self = shift;
-    my $N = 'RSS::Tree::Node';
+    my $N = 'OnionAVClub::Node';
 
     $self->add(
-        # $N->new->match_title('Gameological Society'),
         $N->new('savagelove', 'Savage Love')->match_title('Savage Love:'),
         $N->new('greatjob', 'Great Job')->match_title('Great Job'),
-        $N->new('newswire', 'Newswire')->match_title(': Newswire:'),
-        $N->new('tv_i_watch', 'TV I Watch')
-            ->match_title(_all_titles(@TV_I_WATCHED)),
-        (map $N->new($$_[0], $$_[2] || $$_[1])->match_title($$_[1]), @TV_I_WATCH2),
-        $N->new('tv', 'TV')->match_title('^TV:'),
-        $N->new('films', 'Films')->match_title('Movie Review'),
-        $N->new('film', 'Film')->match_title('^(?:Film|DVD):'),
+        $N->new('newswire', 'Newswire')->match_title('^(?i:newswire):'),
+        $N->new('geekery', 'Geekery')->match_title('Gateways to Geekery'),
+        $N->new2('tv', 'TV')->add(
+            $N->new('tv_i_watch', 'TV I Watch')
+              ->match_title(_all_titles(@TV_I_WATCHED)),
+            map $N->new($$_[0], $$_[2] || $$_[1])->match_title($$_[1]),
+                @TV_I_WATCH2,
+        ),
         $N->new('comics', 'Comics Panel')
             ->match_title('Comics Panel|Big Issues'),
-        $N->new('books', 'Books')->match_title('^Books:'),
-        $N->new('music', 'Music')->match_title('^Music:'),
-        $N->new('geekery', 'Geekery')->match_title('Gateways to Geekery'),
-        $N->new('comedy', 'Comedy')->match_title('^Comedy:')->add(
+        $N->new2('film')->add(
+            $N->new('films', 'Films')->match_title('Movie Review'),
+        ),
+        $N->new2('books'),
+        $N->new2('music'),
+        $N->new2('comedy')->add(
             $N->new->match_title('Podcast Episode'),
         ),
+        $N->new2('games'),
     );
 
 }
@@ -63,26 +70,51 @@ sub render_article {
 
     my ($byline) = $item->page->find('//div[%s]', 'byline');
 
-    my ($image) = $item->page->find('//div[%s or %s]/img', 'image', 'review_image');
+    my ($image) = $item->page->find(
+        '//div[%s]//div[%s]//img', 'article-image', 'image'
+    );
 
     my $alt = $image->attr('alt') if $image;
 
-    my ($grade) = $item->page->find(
-        '//div[%s]/span[%s]', 'title-holder', 'grade'
-    );
+    my ($grade) = $item->page->find('//div[%s and %s]', 'grade', 'letter');
 
-    my @content = $item->page->find(
-        '//div[%s]/*[self::p or self::ul or self::ol or self::blockquote or self::hr]',
-        'article_body'
-    );
+    my ($content) = $item->page->find('//section[%s]', 'article-text');
+
+    if ($content) {
+        $self->remove($content, 'div[%s]', 'sharetools');
+        $content = $self->new_element('div', $content->content_list);
+        my $template;
+        for my $script ($item->page->find('//script[not(@src)]')) {
+            if (join("", $script->content_list) =~ /IMAGE_URL *= *"([^"]+)"/) {
+                $template = $1;
+                last;
+            }
+        }
+        if (defined $template) {
+            for my $div ($self->find($content, './/div[%s and @data-type="image" and @data-image-id and @data-crop]', 'onion-image')) {
+                my %var = (
+                    id => join(
+                        '/', "", $div->attr('data-image-id') =~ /.{1,4}/gs
+                    ),
+                    crop => $div->attr('crop'),
+                    width => '640',
+                    'format' => $div->attr('data-format') || 'jpg',
+                );
+                (my $src = $template) =~
+                    s/\{\{(id|crop|width|format)\}\}/$var{$1}/g;
+                $div->delete_content;
+                $div->push_content([ 'img', { src => $src } ]);
+            }
+        }
+    }
 
     return (
         $image  && $self->new_element('p', $image),
         $alt    && $self->new_element('p', [ 'i', $alt ]),
         $byline && $self->new_element('p', $byline->as_text),
-        $grade  && $grade->as_text =~ /([[:alpha:]][-+]?)/ &&
+        $grade  && $grade->as_trimmed_text =~ /([[:alpha:]][-+]?)/ &&
             $self->new_element('p', 'Grade: ', [ 'b', $1 ]),
-        @content ? @content : $self->SUPER::render($item),
+        $content ? $content : $self->SUPER::render($item),
     );
 
 }
@@ -106,6 +138,32 @@ sub render {
 
 sub _all_titles {
     return '(?:' . join('|', @_) . ')\b';
+}
+
+{
+
+package OnionAVClub::Node;
+
+use parent qw(RSS::Tree::Node);
+
+sub new2 {
+    my ($class, $type, $title) = @_;
+    return $class->new($type, $title || ucfirst $type)->has_class($type);
+}
+
+sub has_class {
+    my ($self, $class) = @_;
+    $self->{test} = sub {
+        my $item = shift;
+        my $c = $item->cache->{class} ||= do {
+            my ($c) = $item->page->find('/html/body/@class');
+            'x' . (defined $c ? $c->getValue : "");
+        };
+        return substr($c, 1) =~ /\b\Q$class\E\b/;
+    };
+    return $self;
+}
+
 }
 
 
