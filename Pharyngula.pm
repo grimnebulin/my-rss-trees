@@ -22,6 +22,9 @@ sub render {
     my ($self, $item) = @_;
     my ($content) = $item->page->find('//div[%s]', 'entry-content') or return;
     $self->truncate($content, 'div[%s]', 'sharedaddy');
+    $self->remove(
+        $content, './/div[contains(@style,"height") and contains(@id,"-ad-")]'
+    );
     return $content;
 }
 
