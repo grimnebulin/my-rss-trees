@@ -4,9 +4,10 @@ use parent qw(RSS::Tree);
 use strict;
 
 use constant {
-    NAME  => 'femfreq',
-    TITLE => 'Feminist Frequency',
-    FEED  => 'http://www.feministfrequency.com/feed/',
+    NAME     => 'femfreq',
+    TITLE    => 'Feminist Frequency',
+    FEED     => 'http://www.feministfrequency.com/feed/',
+    AGENT_ID => 'Anything',
 };
 
 
