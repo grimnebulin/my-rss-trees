@@ -8,6 +8,7 @@ use constant {
     TITLE    => 'Feminist Frequency',
     FEED     => 'http://www.feministfrequency.com/feed/',
     AGENT_ID => 'Anything',
+    EXTRA_HTTP_HEADERS => { Accept => '*/*' },
 };
 
 
