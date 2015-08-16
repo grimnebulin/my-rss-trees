@@ -14,7 +14,7 @@ sub render {
     my ($self, $item) = @_;
     my @verdict;
 
-    if (my ($verdict) = $item->page->find('//img[contains(@src,"content-divider")]/../preceding-sibling::noindex')) {
+    if (my ($verdict) = get_verdict($item->page)) {
         @verdict = $self->new_element(
             'p', 'Verdict: ', [ 'b', $verdict->as_trimmed_text ]
         );
@@ -22,6 +22,13 @@ sub render {
 
     return (@verdict, $self->SUPER::render($item));
 
+}
+
+sub get_verdict {
+    my $page = shift;
+    return $page->find(
+        '//img[contains(@src,"content-divider")]/../preceding-sibling::noindex|//span[contains(@style,"xx-large")]'
+    );
 }
 
 1;
