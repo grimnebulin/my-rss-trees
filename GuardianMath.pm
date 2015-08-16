@@ -13,20 +13,7 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-
-    my ($content) = $item->page->find('//div[@id="content"]') or return;
-
-    $self->remove($content, './/li[%s]', 'comment-count')
-         ->remove($content, './/ul[li[%s]]', 'byline')
-         ->remove($content, './/*[*[%s]]', 'email-subscription-promo');
-
-    my ($desc) = $item->page->find('//div[%(itemprop)s]', 'description');
-
-    return (
-        $desc && $self->new_element('h2', $desc->as_trimmed_text),
-        $content,
-    );
-
+    return $item->page->find('//div[%(itemprop)s]', 'articleBody');
 }
 
 
