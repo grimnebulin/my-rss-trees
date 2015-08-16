@@ -28,6 +28,7 @@ sub render {
     ) or return;
 
     $self->remove($post, './/div[starts-with(@id,"ad_")]');
+    $self->remove($post, './/div[@id="sidebar"]');
     $self->truncate($post, './/div[@id="metadataBox"]');
     $self->truncate($post, 'div[%s]/*[not(%s and %s)]',
                     'sharebutton-topbar', 'sharebutton', 'comments');
