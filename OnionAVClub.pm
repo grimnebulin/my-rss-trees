@@ -12,17 +12,14 @@ use constant {
 };
 
 my @TV_I_WATCH2 = (
-    # [ 'amdad'  , 'American Dad'                    ],
-    # [ 'archer' , 'Archer'                          ],
-    # [ 'bigbang', 'Big Bang Theory'                 ],
-    # [ 'ds9'    , 'Deep Space Nine'                 ],
-    # [ 'bob'    , 'Bob.s Burgers', q(Bob's Burgers) ],
+    [ 'amdad'  , 'American Dad'                    ],
+    [ 'archer' , 'Archer'                          ],
+    [ 'bigbang', 'Big Bang Theory'                 ],
+    [ 'bob'    , 'Bob.s Burgers', q(Bob's Burgers) ],
     # [ 'got'    , 'Game of Thrones'                 ],
-    # [ 'korra'  , 'Legend of Korra'                 ],
-    # [ 'at'     , 'Adventure Time'                  ],
-    # [ 'sixfeet', 'Six Feet Under'                  ],
-    # [ 'walking', 'Walking Dead'                    ],
-    # [ 'sunny'  , 'Always Sunny'                    ],
+    [ 'at'     , 'Adventure Time'                  ],
+    [ 'walking', 'Walking Dead'                    ],
+    [ 'sunny'  , 'Always Sunny'                    ],
     # [ 'southpark', 'South Park' ],
     # [ 'community', 'Community' ],
     [ 'gravityfalls', 'Gravity Falls' ],
@@ -76,7 +73,9 @@ sub render_article {
 
     my $alt = $image->attr('alt') if $image;
 
-    my ($grade) = $item->page->find('//div[%s and %s]', 'grade', 'letter');
+    my ($grade) = $item->page->find(
+        '//div[%s]//div[%s and %s]', 'meta', 'grade', 'letter'
+    );
 
     my ($content) = $item->page->find('//section[%s]', 'article-text');
 
