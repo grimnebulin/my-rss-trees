@@ -6,7 +6,7 @@ use strict;
 use constant {
     NAME  => 'boingboing',
     TITLE => 'Boing Boing',
-    FEED  => 'http://feeds.boingboing.net/boingboing/iBag',
+    FEED  => 'http://boingboing.net/feed',
 };
 
 
