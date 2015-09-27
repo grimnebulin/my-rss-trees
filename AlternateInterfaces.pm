@@ -1,7 +1,6 @@
 package AlternateInterfaces;
 
 use Errno;
-use parent qw(RSS::Tree);
 use strict;
 
 
