@@ -1,12 +1,13 @@
 package Maakies;
 
-use parent qw(RSS::Tree);
+use parent qw(AlternateInterfaces RSS::Tree);
 use strict;
 
 use constant {
     NAME  => 'maakies',
     TITLE => 'Maakies',
     FEED  => 'http://www.maakies.com/?feed=rss2',
+    LIMIT => 5,
 };
 
 
