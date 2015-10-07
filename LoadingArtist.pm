@@ -1,12 +1,14 @@
 package LoadingArtist;
 
-use parent qw(RSS::Tree);
+use parent qw(AlternateInterfaces RSS::Tree);
 use strict;
 
 use constant {
     FEED  => 'http://feeds.feedburner.com/LoadingArtist',
     NAME  => 'loadingartist',
     TITLE => 'Loading Artist',
+    LIMIT => 3,
+    AUTORESOLVE => 'follow',
 };
 
 
