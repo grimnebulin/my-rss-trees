@@ -12,15 +12,13 @@ use constant {
 
 sub render {
     my ($self, $item) = @_;
-
-    my ($content) = $item->page->find('//div[@id="content"]/article[1]')
-        or return;
-
-    $self->remove($content, './/div[%s]', 'entry-meta');
-    $self->remove($content, './/*[self::script or self::footer]');
-
-    return $content;
-
+    my @content = $item->page->find('//div[%s][not(footer)]', 'post-inner') or return;
+    for my $elem (@content) {
+        $self->remove($elem, './/aside');
+        $self->remove($elem, './/a[%s]', 'category-slug');
+        $self->remove($elem, './/p[%s]', 'byline');
+    }
+    return @content;
 }
 
 
