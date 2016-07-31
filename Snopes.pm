@@ -14,9 +14,9 @@ sub render {
     my ($self, $item) = @_;
     my @verdict;
 
-    if (my ($verdict) = get_verdict($item->page)) {
+    if (my ($verdict) = $self->get_verdict($item->page)) {
         @verdict = $self->new_element(
-            'p', 'Verdict: ', [ 'b', $verdict->as_trimmed_text ]
+            'p', 'Verdict: ', [ 'b', $verdict ]
         );
     }
 
@@ -25,10 +25,16 @@ sub render {
 }
 
 sub get_verdict {
-    my $page = shift;
-    return $page->find(
-        '//img[contains(@src,"content-divider")]/../preceding-sibling::noindex|//span[contains(@style,"xx-large")]'
-    );
+    my ($self, $page) = @_;
+    for my $div ($page->find('//div[%s]/div', 'article-text')) {
+        my $ecount = (() = $self->find($div, '*'));
+        my $icount = (() = $self->find($div, 'img'));
+        my $scount = (my ($span) = $self->find($div, 'span'));
+        if ($ecount == 2 && $icount == 1 && $scount == 1) {
+            return $span->as_trimmed_text;
+        }
+    }
+    return;
 }
 
 1;
