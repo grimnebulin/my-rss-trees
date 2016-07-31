@@ -19,7 +19,7 @@ sub init {
 
 sub render {
     my ($self, $item) = @_;
-    $self->wrap($_, 'div') for $item->content->find('//img');
+    $self->wrap($_, 'div') for $item->description->find('//img');
     return;
 }
 
