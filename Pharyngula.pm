@@ -13,7 +13,7 @@ use constant {
 
 sub test {
     my ($self, $item) = @_;
-    return $item->creator =~ /pz/i
+    return $item->author =~ /pz/i
         && $item->title !~ /\A\[/
         && $item->title !~ /\]\z/
 }
