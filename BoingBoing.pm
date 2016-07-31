@@ -22,21 +22,20 @@ sub init {
 
 sub render {
     my ($self, $item) = @_;
+    my ($image) = $item->page->find('//div[%s]//img', 'featuredimage');
+    my ($story) = $item->page->find('//div[@id="story"]');
 
-    my ($post) = $item->page->find(
-        '//div[@id="main-page" or @id="post" or %s]', 'post'
-    ) or return;
+    if ($story) {
+        $self->remove($story, '//div[count(child::node())=1 and count(child::text())=1 and .="report this ad"]');
+        $self->truncate($story, './/div[div[@id="mc_embed_signup"]]');
+        if ($image) {
+            if (grep { $_->attr('src') eq $image->attr('src') } $self->find($story, './/img')) {
+                $image = undef;
+            }
+        }
+    }
 
-    $self->remove($post, './/div[starts-with(@id,"ad_")]');
-    $self->remove($post, './/div[@id="sidebar"]');
-    $self->truncate($post, './/div[@id="metadataBox"]');
-    $self->truncate($post, 'div[%s]/*[not(%s and %s)]',
-                    'sharebutton-topbar', 'sharebutton', 'comments');
-
-    $self->_unalign_wide_image($item, $_)
-        for $self->find($post, './/img[@align and @src]');
-
-    return $post;
+    return ($image, $story);
 
 }
 
