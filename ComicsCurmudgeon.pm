@@ -23,7 +23,7 @@ sub render {
 
     $item->content->truncate('//div[%s]', 'yarpp-related-rss');
 
-    if ($item->title =~ /Metapost/) {
+    if ($item->title =~ /Metapost|COTW/) {
         for my $p ($item->content->find('//p')) {
             for my $link ($p->findnodes('.//a[contains(@href,"/images/")]')) {
                 $p->postinsert(
