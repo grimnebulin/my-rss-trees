@@ -20,7 +20,8 @@ sub init {
 sub get_body {
     my ($self, $page) = @_;
     my ($body) = $page->find('//div[%s]', 'post-content') or return;
-    $self->remove($body, '//*[%s or %s]|//aside', 'content-ad', 'hide');
+    $self->remove($body, './/*[%s or %s]|//aside', 'content-ad', 'hide');
+    $self->remove($body, './/div[contains(@class,"js_ad")]');
     $self->truncate($body, '//div[@id="inset_groups"]');
     return $body;
 }

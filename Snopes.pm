@@ -7,8 +7,14 @@ use constant {
     FEED  => 'http://www.snopes.com/info/whatsnew.rss',
     NAME  => 'snopes',
     TITLE => 'Snopes',
+    LIMIT => 10,
 };
 
+
+sub test {
+    my ($self, $item) = @_;
+    return $item->description !~ /\b(?:fake|hoax|satire)\b/i;
+}
 
 sub render {
     my ($self, $item) = @_;
@@ -26,15 +32,12 @@ sub render {
 
 sub get_verdict {
     my ($self, $page) = @_;
-    for my $div ($page->find('//div[%s]/div', 'article-text')) {
-        my $ecount = (() = $self->find($div, '*'));
-        my $icount = (() = $self->find($div, 'img'));
-        my $scount = (my ($span) = $self->find($div, 'span'));
-        if ($ecount == 2 && $icount == 1 && $scount == 1) {
-            return $span->as_trimmed_text;
-        }
-    }
-    return;
+    my ($rating) = grep {
+        $_->attr('style') !~ /display *: *none/
+    } $page->find('//span[@itemtype="http://schema.org/Rating"]');
+    $rating or ($rating) = $page->find('//div[%s]', 'claim');
+    return $rating ? $self->find($rating, './/span') : ();
 }
+
 
 1;

@@ -6,7 +6,7 @@ use strict;
 use constant {
     NAME  => 'perlreddit',
     TITLE => 'Perl',
-    FEED  => 'http://www.reddit.com/r/perl/.rss',
+    FEED  => 'https://www.reddit.com/r/perl/.rss',
 };
 
 1;

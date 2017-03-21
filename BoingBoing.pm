@@ -26,8 +26,10 @@ sub render {
     my ($story) = $item->page->find('//div[@id="story"]');
 
     if ($story) {
-        $self->remove($story, '//div[count(child::node())=1 and count(child::text())=1 and .="report this ad"]');
+        $self->remove($story, './/div[count(child::node())=1 and count(child::text())=1 and .="report this ad"]');
         $self->truncate($story, './/div[div[@id="mc_embed_signup"]]');
+        $self->remove($story, './/h3[%s]', 'thetags');
+        $self->remove($story, './/div[%s]//a[not(contains(@href,"boingboing"))]', 'share');
         if ($image) {
             if (grep { $_->attr('src') eq $image->attr('src') } $self->find($story, './/img')) {
                 $image = undef;
