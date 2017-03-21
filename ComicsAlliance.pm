@@ -7,27 +7,31 @@ use constant {
     NAME  => 'comicsalliance',
     TITLE => 'Comics Alliance',
     FEED  => 'http://comicsalliance.com/feed/',
-    LIMIT => 3,
+    LIMIT => 20,
 };
 
 
 sub render {
     my ($self, $item) = @_;
-    return $self->_recurse($item->page->find('//div[%s]', 'the_content'));
+    return (
+        $self->new_element('div', [ 'i', $item->creator ]),
+        $self->_recurse($item->page->find('//div[%s]', 'the_content'))
+    );
 }
 
 sub _recurse {
     my $self = shift;
-    for my $elem (@_) {
-        if (ref $elem) {
-            if ($elem->tag eq 'img') {
-                $elem = $self->new_element('div', $elem);
+    return map {
+        if (ref $_) {
+            if ($_->tag eq 'img') {
+                $self->new_element('div', $_);
             } else {
-                $self->_recurse($elem->content_list);
+                $self->_recurse($_->content_list);
             }
+        } else {
+            $_;
         }
-    }
-    return @_;
+    } @_;
 }
 
 
