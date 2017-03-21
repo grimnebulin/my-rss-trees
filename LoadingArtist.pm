@@ -1,6 +1,6 @@
 package LoadingArtist;
 
-use parent qw(AlternateInterfaces RSS::Tree);
+use parent qw(RSS::Tree);
 use strict;
 
 use constant {
@@ -15,6 +15,10 @@ use constant {
 sub render {
     my ($self, $item) = @_;
     my ($image) = $item->page->find('//div[starts-with(@id, "post-")]//div[%s]//img', 'comic') or return;
+    if (my $src = $image->attr('data-cfsrc', undef)) {
+        $image->attr('src', $src);
+    }
+    $image->attr('style', undef);
     my ($body) = $item->page->find('//div[%s]', 'body');
     return ($image, $body);
 }
