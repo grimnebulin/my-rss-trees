@@ -6,7 +6,7 @@ use strict;
 use constant {
     NAME  => 'io9',
     TITLE => 'IO9',
-    FEED  => 'http://feeds.gawker.com/io9/full',
+    FEED => 'http://io9.gizmodo.com/rss',
     TEXT_LIMIT => 10000,
     EMBED_LIMIT => 5,
 };
