@@ -12,6 +12,11 @@ use constant {
 
 my $COMMENT_STYLE = 'font-weight: bold; font-size: smaller; font-style: italic';
 
+sub test {
+    my ($self, $item) = @_;
+    return $item->title !~ /error'd/i;
+}
+
 sub render {
     my ($self, $item) = @_;
     for my $comment ($item->content->find('//comment()')) {
