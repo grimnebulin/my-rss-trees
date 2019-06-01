@@ -8,29 +8,23 @@ use constant {
     TITLE => 'Oglaf',
     FEED  => 'http://www.reddit.com/domain/oglaf.com/.rss',
     LIMIT => 5,
+    AGENT_ID => 'Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101 Firefox/60.0',
 };
 
 
 sub render {
     my ($self, $item) = @_;
 
-    my ($comic) = $item->page->find(
-        '//div[%s]//a/@href[contains(.,"oglaf.com")]', 'entry'
-    ) or return;
+    my ($link) = $item->page =~ m|"url":"(https://www\.oglaf\.com/[^"]+)"| or return;
+    my $uri = $item->page->absolute_uri($link);
+    my $response = $self->agent->get($uri);
+    my $page = $self->new_page($uri, $response->decoded_content);
 
-    my $href = $comic->getValue;
-
-    if ($href =~ m|oglaf.com/comic/|) {
-        return $self->new_element('img', { src => $href });
-    }
-
-    my $resp = $self->agent->post($href, { over18 => 'y' });
-    $resp->is_success or return;
-
-    my $page  = $self->new_page($href, $resp->decoded_content) or return;
     my ($img) = $page->find('//img[@id="strip"]') or return;
     my $title = $img->attr('title', undef);
     my $alt   = $img->attr('alt');
+
+    $item->set_link($link);
 
     return (
         $img,
